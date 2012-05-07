@@ -273,7 +273,18 @@ namespace UAM.Kora
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            count = 0;
+            version++;
+            minKey = null;
+            minValue = default(T);
+            maxKey = null;
+            maxValue = default(T);
+            if (width > 1)
+            {
+                summary.Clear();
+                for (int i = 0; i < cluster.Length; i++)
+                    cluster[i].Clear();
+            }
         }
 
         public int Count
@@ -286,10 +297,35 @@ namespace UAM.Kora
             get { return false; }
         }
 
-
-        IEnumerator<KeyValuePair<uint, T>> IEnumerable<KeyValuePair<uint, T>>.GetEnumerator()
+        public IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator(0);
+        }
+
+        // TODO: speed-up sparse iteration by checking summary trees
+        // TODO: spped up iteration by avoiding recursive GetEnumerator calls - we could cheat by unrolling them, uint tree will only have lg(32)+1 levels.
+        private IEnumerator<KeyValuePair<uint, T>> GetEnumerator(uint parent)
+        {
+            if (minKey != null)
+            {
+                yield return new KeyValuePair<uint, T>((parent << width) + minKey.Value, minValue);
+            }
+            if(width == 1)
+            {
+                if(minKey != maxKey)
+                    yield return new KeyValuePair<uint, T>((parent << width) + maxKey.Value, maxValue);
+            }
+            else
+            {
+                for(uint i = 0; i < cluster.Length; i++)
+                {
+                    var iter = cluster[i].GetEnumerator((parent << (width/2)) + i);
+                    while (iter.MoveNext())
+                    {
+                        yield return iter.Current;
+                    }
+                }
+            }
         }
 
         #region implicits

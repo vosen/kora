@@ -12,6 +12,20 @@ namespace UAM.KoraTests
     {
         private static void Ignore<T>(T arg) { }
 
+        // class created solely to force different code path in enumerator test
+        private class KVPComparer : IEqualityComparer<KeyValuePair<uint, string>>
+        {
+            public bool Equals(KeyValuePair<uint, string> x, KeyValuePair<uint, string> y)
+            {
+                return (x.Key == y.Key) && (x.Value == y.Value);
+            }
+
+            public int GetHashCode(KeyValuePair<uint, string> x)
+            {
+                return x.GetHashCode();
+            }
+        }
+
         private static void CorrectnessCheck(VEBTree<string> tree, IEnumerable<uint> checkSet)
         {
             foreach(uint val in checkSet)
@@ -140,7 +154,6 @@ namespace UAM.KoraTests
             Assert.IsFalse(tree.ContainsKey(3));
         }
 
-
         [Test]
         public void Count()
         {
@@ -158,6 +171,25 @@ namespace UAM.KoraTests
             Assert.IsTrue(tree.Remove(12));
             tree.Add(9, "9");
             Assert.AreEqual(4, tree.Count);
+        }
+
+        [Test]
+        public void Enumerator()
+        {
+            var tree = new VEBTree<string>(4);
+            tree.Add(8, "8");
+            tree.Add(15, "15");
+            tree.Add(1, "1");
+            tree.Add(2, "2");
+            tree.Add(0, "0");
+            tree.Add(3, "3");
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(0, "0"), new KVPComparer()));
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(1, "1"), new KVPComparer()));
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(2, "2"), new KVPComparer()));
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(3, "3"), new KVPComparer()));
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(8, "8"), new KVPComparer()));
+            Assert.IsTrue(tree.Contains(new KeyValuePair<uint, string>(15, "15"), new KVPComparer()));
+            Assert.AreEqual(6, tree.Count((kvp) => true));
         }
 
     }
