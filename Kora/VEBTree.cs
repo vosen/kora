@@ -247,12 +247,12 @@ namespace UAM.Kora
 
         public ICollection<uint> Keys
         {
-            get { throw new NotImplementedException(); }
+            get { return new VEBTree<T>.KeyCollection(this); }
         }
 
         public ICollection<T> Values
         {
-            get { throw new NotImplementedException(); }
+            get { return new VEBTree<T>.ValueCollection(this); }
         }
 
         public T this[uint key]
@@ -332,22 +332,37 @@ namespace UAM.Kora
 
         void ICollection<KeyValuePair<uint, T>>.Add(KeyValuePair<uint, T> item)
         {
-            throw new NotImplementedException();
+            Add(item.Key, item.Value);
         }
 
         bool ICollection<KeyValuePair<uint, T>>.Contains(KeyValuePair<uint, T> item)
         {
-            throw new NotImplementedException();
+            T value;
+            if (TryGetValue(item.Key, out value))
+                return value.Equals(item.Value);
+            return false;
         }
 
         void ICollection<KeyValuePair<uint, T>>.CopyTo(KeyValuePair<uint, T>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            ICollectionHelpers.ThrowIfInsufficientArray(this, array, arrayIndex);
+            var iter = GetEnumerator();
+            for (int i = 0; i < count; i++)
+            {
+                iter.MoveNext();
+                array[i] = iter.Current;
+            }
         }
 
         bool ICollection<KeyValuePair<uint, T>>.Remove(KeyValuePair<uint, T> item)
         {
-            throw new NotImplementedException();
+            T value;
+            if (TryGetValue(item.Key, out value) && value.Equals(item.Value))
+            {
+                Remove(item.Key);
+                return true;
+            }
+            return false;
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
