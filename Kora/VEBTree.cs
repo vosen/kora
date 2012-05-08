@@ -5,7 +5,8 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    public partial class VEBTree<T> : IDictionary<uint, T>
+    // TODO: add version increment to all mutating operations and check to enumerator
+    public partial class VEBTree<T> : ISortedDictionary<uint, T>
     {
         private VEBTree<T>[] cluster;
         private VEBTree<uint> summary;
@@ -38,30 +39,20 @@ namespace UAM.Kora
             }
         }
 
-        private uint High(uint x)
+        private uint HighBits(uint x)
         {
-            if (width < 2)
-                throw new ArgumentException();
-
             int leftShift = 32 - width;
             return (x << leftShift) >>(leftShift + width / 2);
         }
 
-        private uint Low(uint x)
+        private uint LowBits(uint x)
         {
-            if (width < 2)
-                throw new ArgumentException();
-
-
             int shift = 32 - (width/2);
             return ((x << shift) >> shift);
         }
 
         private uint Index(uint x, uint y)
         {
-            if (width < 2)
-                throw new ArgumentException();
-
             return (x << (width/2)) + y;
         }
 
@@ -95,18 +86,18 @@ namespace UAM.Kora
                 minValue = tempValue;
             }
 
-            if (width > 1)
+            if (!IsLeaf)
             {
-                uint high_x = High(key);
+                uint high_x = HighBits(key);
                 if (cluster[high_x].minKey == null)
                 {
                     summary[high_x] = high_x;
-                    uint low_x = Low(key);
+                    uint low_x = LowBits(key);
                     cluster[high_x].EmptyAdd(low_x, value);
                 }
                 else
                 {
-                    cluster[high_x].AddChecked(Low(key), value, overwrite);
+                    cluster[high_x].AddChecked(LowBits(key), value, overwrite);
                 }
             }
 
@@ -136,10 +127,10 @@ namespace UAM.Kora
         {
             if (key == minKey || key == maxKey)
                 return true;
-            else if (width == 1)
+            else if (IsLeaf)
                 return false;
             else
-                return cluster[High(key)].ContainsKey(Low(key));
+                return cluster[HighBits(key)].ContainsKey(LowBits(key));
         }
 
         public bool Remove(uint key)
@@ -166,7 +157,7 @@ namespace UAM.Kora
                 }
             }
             // minkey and maxkey are different and we are within leaf
-            else if (width == 1)
+            else if (IsLeaf)
             {
                 if (key == 0)
                 {
@@ -193,10 +184,10 @@ namespace UAM.Kora
                     // update the value
                     minValue = cluster[firstCluster].minValue;
                 }
-                bool result = cluster[High(key)].RemoveCore(Low(key));
-                if(cluster[High(key)].minKey == null)
+                bool result = cluster[HighBits(key)].RemoveCore(LowBits(key));
+                if(cluster[HighBits(key)].minKey == null)
                 {
-                    summary.RemoveCore(High(key));
+                    summary.RemoveCore(HighBits(key));
                     if(key == maxKey)
                     {
                         uint? summaryMax = summary.maxKey;
@@ -214,8 +205,8 @@ namespace UAM.Kora
                 }
                 else if (key == maxKey)
                 {
-                    maxKey = Index(High(key), cluster[High(key)].maxKey.Value);
-                    maxValue = cluster[High(key)].maxValue;
+                    maxKey = Index(HighBits(key), cluster[HighBits(key)].maxKey.Value);
+                    maxValue = cluster[HighBits(key)].maxValue;
                 }
                 return result;
             }
@@ -234,14 +225,14 @@ namespace UAM.Kora
                 value = maxValue;
                 return true;
             }
-            else if (width == 1)
+            else if (IsLeaf)
             {
                 value = default(T);
                 return false;
             }
             else
             {
-                return cluster[High(key)].TryGetValue(Low(key), out value);
+                return cluster[HighBits(key)].TryGetValue(LowBits(key), out value);
             }
         }
 
@@ -279,7 +270,7 @@ namespace UAM.Kora
             minValue = default(T);
             maxKey = null;
             maxValue = default(T);
-            if (width > 1)
+            if (!IsLeaf)
             {
                 summary.Clear();
                 for (int i = 0; i < cluster.Length; i++)
@@ -303,14 +294,14 @@ namespace UAM.Kora
         }
 
         // TODO: speed-up sparse iteration by checking summary trees
-        // TODO: spped up iteration by avoiding recursive GetEnumerator calls - we could cheat by unrolling them, uint tree will only have lg(32)+1 levels.
+        // TODO: speed up iteration by avoiding recursive GetEnumerator calls - we could cheat by unrolling them, uint tree will only have lg(32)+1 levels.
         private IEnumerator<KeyValuePair<uint, T>> GetEnumerator(uint parent)
         {
             if (minKey != null)
             {
                 yield return new KeyValuePair<uint, T>((parent << width) + minKey.Value, minValue);
             }
-            if(width == 1)
+            if(IsLeaf)
             {
                 if(minKey != maxKey)
                     yield return new KeyValuePair<uint, T>((parent << width) + maxKey.Value, maxValue);
@@ -327,6 +318,75 @@ namespace UAM.Kora
                 }
             }
         }
+
+        #region ISorted
+
+
+        public KeyValuePair<uint, T>? First()
+        {
+            if (minKey == null)
+                return null;
+            return new KeyValuePair<uint, T>(minKey.Value, minValue);
+        }
+
+        public KeyValuePair<uint, T>? Last()
+        {
+            if (maxKey == null)
+                return null;
+            return new KeyValuePair<uint, T>(maxKey.Value, maxValue);
+        }
+
+        public KeyValuePair<uint, T>? Lower(uint key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public KeyValuePair<uint, T>? Higher(uint key)
+        {
+            if (IsLeaf)
+            {
+                if (key == 0 && maxKey == 1)
+                    return new KeyValuePair<uint, T>(1, maxValue);
+                else
+                    return null;
+            }
+            else if (minKey != null && key < minKey.Value)
+            {
+                return new KeyValuePair<uint, T>(minKey.Value, minValue);
+            }
+            else
+            {
+                uint highBits =  HighBits(key);
+                uint? maxLow = cluster[highBits].maxKey;
+                if (maxLow != null && LowBits(key) < maxLow.Value)
+                {
+                    var offset = cluster[highBits].Higher(LowBits(key));
+                    uint returnKey = Index(highBits, offset.Value.Key);
+                    return new KeyValuePair<uint, T>(returnKey, offset.Value.Value);
+                }
+                else
+                {
+                    var succCluster = summary.Higher(HighBits(key));
+                    if (succCluster == null)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        var offset = cluster[succCluster.Value.Key].minKey;
+                        return new KeyValuePair<uint, T>(Index(succCluster.Value.Key, offset.Value), cluster[succCluster.Value.Key].minValue);
+                    }
+                }
+            }
+
+        }
+
+        private bool IsLeaf
+        {
+            get{ return width == 1; }
+        }
+
+        #endregion
 
         #region implicits
 

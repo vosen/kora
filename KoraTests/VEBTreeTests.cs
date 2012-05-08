@@ -192,5 +192,53 @@ namespace UAM.KoraTests
             Assert.AreEqual(6, tree.Count((kvp) => true));
         }
 
+        [Test]
+        public void Clear()
+        {
+            var tree = new VEBTree<string>(8);
+            tree.Add(200, "200");
+            tree.Add(100, "100");
+            tree.Add(1, "1");
+            tree.Add(2, "2");
+            tree.Add(34, "34");
+            tree.Clear();
+            Assert.IsFalse(tree.Any());
+        }
+
+        [Test]
+        public void Higher()
+        {
+            var tree = new VEBTree<string>(8);
+            tree.Add(44, "44");
+            tree.Add(200, "200");
+            tree.Add(46, "46");
+            tree.Add(216, "216");
+            tree.Add(248, "248");
+            tree.Add(188, "188");
+            Assert.AreEqual(new KeyValuePair<uint, string>(188, "188"), tree.Higher(155));
+            Assert.AreEqual(new KeyValuePair<uint, string>(248, "248"), tree.Higher(238));
+            Assert.AreEqual(new KeyValuePair<uint, string>(188, "188"), tree.Higher(84));
+            Assert.AreEqual(null, tree.Higher(248));
+        }
+
+        [Test]
+        public void FirstLast()
+        {
+            var tree = new VEBTree<string>(8);
+            Assert.AreEqual(null, tree.First());
+            Assert.AreEqual(null, tree.Last());
+            tree.Add(229, "229");
+            Assert.AreEqual(new KeyValuePair<uint, string>(229, "229"), tree.First());
+            Assert.AreEqual(new KeyValuePair<uint, string>(229, "229"), tree.Last());
+            tree.Add(216, "216");
+            tree.Add(21, "21");
+            tree.Add(162, "162");
+            tree.Add(240, "240");
+            tree.Add(95, "95");
+            tree.Remove(240);
+            Assert.AreEqual(new KeyValuePair<uint, string>(21, "21"), tree.First());
+            Assert.AreEqual(new KeyValuePair<uint, string>(229, "229"), tree.Last());
+        }
+
     }
 }
