@@ -427,7 +427,7 @@ namespace UAM.Kora
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return ((ICollection<KeyValuePair<uint, T>>)this).GetEnumerator();
+            return GetEnumerator();
         }
 
         #endregion
