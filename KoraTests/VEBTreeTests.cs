@@ -240,5 +240,23 @@ namespace UAM.KoraTests
             Assert.AreEqual(new KeyValuePair<uint, string>(229, "229"), tree.Last());
         }
 
+        [Test]
+        public void Lower()
+        {
+            var tree = new VEBTree<string>(8);
+            tree.Add(22, "22");
+            tree.Add(69, "69");
+            tree.Add(248, "248");
+            tree.Add(55, "55");
+            tree.Add(26, "26");
+            tree.Add(76, "76");
+            Assert.AreEqual(null, tree.Lower(5));
+            Assert.AreEqual(new KeyValuePair<uint, string>(55, "55"), tree.Lower(61));
+            Assert.AreEqual(new KeyValuePair<uint, string>(248, "248"), tree.Lower(255));
+            Assert.AreEqual(new KeyValuePair<uint, string>(76, "76"), tree.Lower(248));
+            Assert.AreEqual(new KeyValuePair<uint, string>(76, "76"), tree.Lower(115));
+            Assert.AreEqual(new KeyValuePair<uint, string>(69, "69"), tree.Lower(73));
+        }
+
     }
 }

@@ -338,7 +338,44 @@ namespace UAM.Kora
 
         public KeyValuePair<uint, T>? Lower(uint key)
         {
-            throw new NotImplementedException();
+            if (IsLeaf)
+            {
+                if (key == 1 && minKey == 0)
+                    return new KeyValuePair<uint, T>(0, minValue);
+                else
+                    return null;
+            }
+            else if (maxKey != null && key > maxKey.Value)
+            {
+                return new KeyValuePair<uint, T>(maxKey.Value, maxValue);
+            }
+            else
+            {
+                uint highBits = HighBits(key);
+                uint? minLow = cluster[HighBits(key)].minKey;
+                if (minLow != null && LowBits(key) > minLow.Value)
+                {
+                    var offset = cluster[highBits].Lower(LowBits(key));
+                    uint returnKey = Index(highBits, offset.Value.Key);
+                    return new KeyValuePair<uint, T>(returnKey, offset.Value.Value);
+                }
+                else
+                {
+                    var predCluster = summary.Lower(HighBits(key));
+                    if (predCluster == null)
+                    {
+                        if (minKey != null && key > minKey.Value)
+                            return new KeyValuePair<uint, T>(minKey.Value, minValue);
+                        else
+                            return null;
+                    }
+                    else
+                    {
+                        var offset = cluster[predCluster.Value.Key].maxKey;
+                        return new KeyValuePair<uint, T>(Index(predCluster.Value.Key, offset.Value), cluster[predCluster.Value.Key].maxValue);
+                    }
+                }
+            }
         }
 
         public KeyValuePair<uint, T>? Higher(uint key)
