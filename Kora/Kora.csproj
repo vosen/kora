@@ -8,8 +8,8 @@
     <ProjectGuid>{99F6CE29-D46C-4C99-8C83-F94815EBFFD6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>kora</RootNamespace>
-    <AssemblyName>kora</AssemblyName>
+    <RootNamespace>UAM.Kora</RootNamespace>
+    <AssemblyName>Kora</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,12 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitHacks.cs" />
     <Compile Include="ICollectionHelpers.cs" />
+    <Compile Include="HashTable.InnerHashTable.cs" />
     <Compile Include="ISortedDictionary.cs" />
+    <Compile Include="HashTable.cs" />
+    <Compile Include="OuterHashTable.cs" />
     <Compile Include="VEBTree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VEBTreeKeyCollection.cs" />
-    <Compile Include="VEBTreeValueCollection.cs" />
+    <Compile Include="VEBTree.KeyCollection.cs" />
+    <Compile Include="VEBTree.ValueCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
