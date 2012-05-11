@@ -33,14 +33,30 @@ namespace UAM.Kora
             get { return count; }
         }
 
-        public bool Remove(uint key)
+        public void Remove(uint key)
         {
-            throw new NotImplementedException();
+            count++;
+            uint firstHash = function(key);
+            uint secondHash = inner[firstHash].function(key);
+            if (inner[firstHash].IsContained((int)secondHash))
+            {
+                inner[firstHash].RemoveAt((int)secondHash);
+            }
+
+            if (count >= limit)
+                RehashAll(null);
         }
 
-        public bool TryGetValue(uint key, out T value)
+        public bool TryGetValue(uint key, ref T value)
         {
-            throw new NotImplementedException();
+            uint firstHash = function(key);
+            uint secondHash = inner[firstHash].function(key);
+            if (!inner[firstHash].IsContained((int)secondHash))
+            {
+                return false;
+            }
+            value = inner[firstHash].values[secondHash];
+            return true;
         }
 
         private Func<uint, uint> GetRandomHashMethod(uint size)
@@ -53,9 +69,9 @@ namespace UAM.Kora
             return (x) => (a * x + b) >> shift;
         }
 
-        private void RehashAll(uint? newValue)
+        private void RehashAll(KeyValuePair<uint, T>? newValue)
         {
-            uint[] elements = new uint[newValue == null ? count : count + 1];
+            KeyValuePair<uint, T>[] elements = new KeyValuePair<uint,T>[newValue == null ? count : count + 1];
             if(inner != null)
             {
                 int j = 0;
@@ -65,7 +81,7 @@ namespace UAM.Kora
                     {
                         if (table.IsContained(i))
                         {
-                            elements[j] = table[i];
+                            elements[j] = table.table[i].Value;
                             j++;
                         }
                     }
@@ -78,18 +94,18 @@ namespace UAM.Kora
             limit = (uint)newLimit;
             // hashSize = s(M)
             uint hashSize = BitHacks.RoundToPower(limit << 1);
-            List<uint>[] hashList = null;
+            List<KeyValuePair<uint, T>>[] hashList = null;
             // find suitable higher level function
             for(bool injective = false; !injective;)
             {
                 function = GetRandomHashMethod(hashSize);
-                hashList = new List<uint>[hashSize];
+                hashList = new List<KeyValuePair<uint, T>>[hashSize];
+                // initialize provisional list of eleemnts going into second level table
                 for (int i = 0; i < hashList.Length; i++)
-                {
-                    hashList[i] = new List<uint>();
-                }
-                foreach (uint elm in elements)
-                    hashList[function(elm)].Add(elm);
+                    hashList[i] = new List<KeyValuePair<uint,T>>();
+                // run first level hashes
+                foreach (var elm in elements)
+                    hashList[function(elm.Key)].Add(elm);
                 var testTable = new InnerHashTable[hashSize];
                 injective = SatisfiesMagicalCondition(hashList, limit);
             }
@@ -104,10 +120,11 @@ namespace UAM.Kora
                     inner[i].function = GetRandomHashMethod(inner[i].AllocatedSize);
                     for (int j = 0; j < hashList[i].Count; j++)
                     {
-                        uint hash = inner[i].function(hashList[i][j]);
-                        if(!inner[i].IsEmpty((int)hash))
+                        uint hash = inner[i].function(hashList[i][j].Key);
+                        if(inner[i].IsContained((int)hash))
+                            // don't judge me
                             goto Failed;
-                        inner[i][j] = hashList[i][j];
+                        inner[i].table[j] = hashList[i][j];
                     }
                     injective = true;
                 Failed:
@@ -116,10 +133,10 @@ namespace UAM.Kora
             }
         }
 
-        private bool SatisfiesMagicalCondition(List<uint>[] inner, uint currLimit)
+        private bool SatisfiesMagicalCondition(List<KeyValuePair<uint,T>>[] inner, uint currLimit)
         {
             uint sum = 0;
-            foreach (List<uint> tab in inner)
+            foreach (var tab in inner)
             {
                 sum += (uint)((tab.Count << 3) - (4*tab.Count));
             }

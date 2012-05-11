@@ -12,7 +12,8 @@ namespace UAM.Kora
             // table-size is table.Length
             private uint count;
             private uint limit;
-            private uint[] table;
+            internal KeyValuePair<uint, T>?[] table;
+            internal T[] values;
             // 0 is for empty
             // 1 is for contained
             // 2 is for deleted
@@ -24,27 +25,13 @@ namespace UAM.Kora
                 count = length;
                 limit = 2 * length;
                 uint hashSize = BitHacks.RoundToPower(2 * limit * (limit - 1));
-                table = new uint[hashSize];
+                table = new KeyValuePair<uint, T>?[hashSize];
                 control = new byte[hashSize];
             }
 
             internal void Clear()
             {
-                table = new uint[table.Length];
-            }
-
-            internal uint this[int i]
-            {
-                get
-                {
-                    System.Diagnostics.Debug.Assert(IsContained(i));
-                    return table[i];
-                }
-                set
-                {
-                    table[i] = value;
-                    control[i] = 1;
-                }
+                table = new KeyValuePair<uint, T>?[table.Length];
             }
 
             internal uint AllocatedSize
@@ -54,22 +41,17 @@ namespace UAM.Kora
 
             internal void RemoveAt(int idx)
             {
-                control[idx] = 2;
-            }
-
-            internal bool IsEmpty(int idx)
-            {
-                return control[idx] == 0;
-            }
-
-            internal bool IsContained(int idx)
-            {
-                return control[idx] == 1;
+                table[idx] = null;
             }
 
             internal bool IsDeleted(int idx)
             {
-                return control[idx] == 2;
+                return table[idx] == null;
+            }
+
+            internal bool IsContained(int idx)
+            {
+                return table[idx] != null;
             }
         }
     }
