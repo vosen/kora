@@ -12,7 +12,7 @@ namespace UAM.Kora
         //private static uint SetSize = 2;
 
         Random random;
-        uint count;
+        uint version;
         uint limit;
         InnerHashTable[] inner;
         Func<uint, uint> function;
@@ -23,19 +23,47 @@ namespace UAM.Kora
             RehashAll(null);
         }
 
+        // add overwrites
         public void Add(uint key, T value)
         {
-            throw new NotImplementedException();
+            if (++version > limit)
+            {
+                RehashAll(new KeyValuePair<uint, T>(key, value));
+                return;
+            }
+            uint firstHash = function(key);
+            InnerHashTable innerHashed = inner[firstHash];
+            uint secondHash = innerHashed.function(key);
+            if (innerHashed.IsDeleted((int)secondHash))
+            {
+                innerHashed.table[secondHash] = new KeyValuePair<uint, T>(key, value);
+                return;
+            }
+            // We've got collision now, do something about it
+            // Note that original algorithm does this in a roundabout way due to their weird data structures
+            if (++innerHashed.count <= innerHashed.limit)
+            {
+                // Rehash second level
+                innerHashed.RehashWith(key, value, this, innerHashed.table, innerHashed.table.Length);
+            }
+            else
+            {
+                // Grow the second level
+                uint newLimit = limit = 2 * Math.Max(1, innerHashed.limit);
+                uint newSize = 2 * newLimit * (newLimit -1);
+                innerHashed.limit = newLimit;
+                innerHashed.RehashWith(key, value, this, innerHashed.table, (int)newSize);
+            }
         }
 
         internal uint Count
         {
-            get { return count; }
+            get { return version; }
         }
 
         public void Remove(uint key)
         {
-            count++;
+            version++;
             uint firstHash = function(key);
             uint secondHash = inner[firstHash].function(key);
             if (inner[firstHash].IsContained((int)secondHash))
@@ -43,7 +71,7 @@ namespace UAM.Kora
                 inner[firstHash].RemoveAt((int)secondHash);
             }
 
-            if (count >= limit)
+            if (version >= limit)
                 RehashAll(null);
         }
 
@@ -55,11 +83,12 @@ namespace UAM.Kora
             {
                 return false;
             }
-            value = inner[firstHash].values[secondHash];
+            var returnValue = inner[firstHash].table[secondHash];
+            value = returnValue.Value.Value;
             return true;
         }
 
-        private Func<uint, uint> GetRandomHashMethod(uint size)
+        internal Func<uint, uint> GetRandomHashMethod(uint size)
         {
             System.Diagnostics.Debug.Assert(size == BitHacks.RoundToPower(size));
 
@@ -71,7 +100,7 @@ namespace UAM.Kora
 
         private void RehashAll(KeyValuePair<uint, T>? newValue)
         {
-            KeyValuePair<uint, T>[] elements = new KeyValuePair<uint,T>[newValue == null ? count : count + 1];
+            KeyValuePair<uint, T>[] elements = new KeyValuePair<uint,T>[newValue == null ? version : version + 1];
             if(inner != null)
             {
                 int j = 0;
@@ -89,8 +118,8 @@ namespace UAM.Kora
                 if(newValue.HasValue)
                     elements[j] = newValue.Value;
             }
-            count = (uint)elements.LongLength;
-            float newLimit = (1.0f + Fill) * Math.Max(count, 4.0f);
+            version = (uint)elements.LongLength;
+            float newLimit = (1.0f + Fill) * Math.Max(version, 4.0f);
             limit = (uint)newLimit;
             // hashSize = s(M)
             uint hashSize = BitHacks.RoundToPower(limit << 1);
@@ -114,7 +143,7 @@ namespace UAM.Kora
             for (int i = 0; i < hashSize; i++)
             {
                 inner[i] = new InnerHashTable((uint)hashList[i].Count);
-                for (bool injective = false; !injective; )
+                while (true)
                 {
                     inner[i].Clear();
                     inner[i].function = GetRandomHashMethod(inner[i].AllocatedSize);
@@ -126,7 +155,7 @@ namespace UAM.Kora
                             goto Failed;
                         inner[i].table[j] = hashList[i][j];
                     }
-                    injective = true;
+                    break;
                 Failed:
                     continue;
                 }
