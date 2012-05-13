@@ -14,7 +14,15 @@ namespace KoraTests
         public void Creation()
         {
             var table = new HashTable<string>();
-            Assert.AreEqual(0, table.Count);
+        }
+
+        [Test]
+        public void Adding()
+        {
+            var table = new HashTable<string>();
+            table.Add(1, "1");
+            table.Add(2, "1");
+            table.Add(3, "1");
         }
     }
 }

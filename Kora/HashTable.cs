@@ -56,11 +56,6 @@ namespace UAM.Kora
             }
         }
 
-        internal uint Count
-        {
-            get { return version; }
-        }
-
         public void Remove(uint key)
         {
             version++;
@@ -94,8 +89,9 @@ namespace UAM.Kora
 
             uint a = (uint)random.Next();
             uint b = (uint)(random.Next(65536) << 16);
-            int shift = 32 - (int)size;
-            return (x) => (a * x + b) >> shift;
+            int shift = 31 - (int)BitHacks.Log2Ceiling(size);
+            // weird shifting because c# can shift 32 bit values by up to 31 bits
+            return (x) =>  ((a * x + b) >> shift) >> 1;
         }
 
         private void RehashAll(KeyValuePair<uint, T>? newValue)
@@ -142,7 +138,7 @@ namespace UAM.Kora
             inner = new InnerHashTable[hashSize];
             for (int i = 0; i < hashSize; i++)
             {
-                inner[i] = new InnerHashTable((uint)hashList[i].Count);
+                inner[i] = new InnerHashTable(Math.Max((uint)hashList[i].Count,1));
                 while (true)
                 {
                     inner[i].Clear();
