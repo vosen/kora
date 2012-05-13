@@ -55,7 +55,7 @@ namespace UAM.Kora
 
             internal void RehashWith(uint key, T value, HashTable<T> parent, KeyValuePair<uint, T>?[] oldTable, int size)
             {
-                var tempList = new KeyValuePair<uint, T>[count+1];
+                var tempList = new KeyValuePair<uint, T>[count];
                 for (int i = 0, j = 0; i < oldTable.Length; i++)
                 {
                     if (oldTable[i] != null)
@@ -64,7 +64,7 @@ namespace UAM.Kora
                         j++;
                     }
                 }
-                tempList[count] = new KeyValuePair<uint, T>(key, value);
+                tempList[count-1] = new KeyValuePair<uint, T>(key, value);
                 // we've got temp list ready, now try and find suitable function
                 while (true)
                 {

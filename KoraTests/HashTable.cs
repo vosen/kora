@@ -10,10 +10,23 @@ namespace UAM.KoraTests
     [TestFixture]
     class HashTable
     {
+        private static void CheckInnerTables(HashTable<string> table)
+        {
+            foreach (var inner in table.inner)
+            {
+                foreach (var pair in inner.table)
+                {
+                    if (pair != null)
+                        Assert.AreNotEqual(null, pair.Value);
+                }
+            }
+        }
+
         [Test]
         public void Creation()
         {
             var table = new HashTable<string>();
+            CheckInnerTables(table);
         }
 
         [Test]
@@ -21,13 +34,21 @@ namespace UAM.KoraTests
         {
             var table = new HashTable<string>();
             table.Add(1, "1");
+            CheckInnerTables(table);
             table.Add(2, "2");
+            CheckInnerTables(table);
             table.Add(3, "3");
+            CheckInnerTables(table);
             table.Add(4, "4");
+            CheckInnerTables(table);
             table.Add(5, "5");
+            CheckInnerTables(table);
             table.Add(6, "6");
+            CheckInnerTables(table);
             table.Add(7, "7");
+            CheckInnerTables(table);
             table.Add(8, "8");
+            CheckInnerTables(table);
             string temp = null;
             Assert.IsTrue(table.TryGetValue(1, ref temp));
             Assert.AreEqual("1", temp);
@@ -53,6 +74,7 @@ namespace UAM.KoraTests
         {
             var table = new HashTable<string>();
             table.Add(1, "1");
+            CheckInnerTables(table);
             uint firstHash = table.GetHash(1);
             uint collision = 2;
             while(!(table.GetHash(collision) == firstHash))
@@ -64,10 +86,38 @@ namespace UAM.KoraTests
             table.inner[firstHash].a = 0;
             table.inner[firstHash].b = secondHash;
             table.Add(collision, collision.ToString());
+            CheckInnerTables(table);
             string temp = null;
             Assert.IsTrue(table.TryGetValue(collision, ref temp));
             Assert.AreEqual(collision.ToString(), temp);
         }
 #endif
+
+        [Test]
+        public void Delete()
+        {
+            uint size = 128;
+            string temp = null;
+            var table = new HashTable<string>();
+            for (uint i = 0; i < size; i++)
+            {
+                table.Add(i, i.ToString());
+                CheckInnerTables(table);
+            }
+            for (uint i = 0; i < size; i++)
+            {
+                Assert.IsTrue(table.TryGetValue(i, ref temp));
+                Assert.AreEqual(i.ToString(), temp);
+            }
+            for (uint i = 0; i < size; i++)
+            {
+                table.Remove(i);
+                CheckInnerTables(table);
+            }
+            for (uint i = 0; i < size; i++)
+            {
+                Assert.IsFalse(table.TryGetValue(i, ref temp));
+            }
+        }
     }
 }

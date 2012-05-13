@@ -148,7 +148,7 @@ namespace UAM.Kora
             {
                 InitializeRandomHash(out a, out b);
                 hashList = new List<KeyValuePair<uint, T>>[hashSize];
-                // initialize provisional list of eleemnts going into second level table
+                // initialize provisional list of elemnts going into second level table
                 for (int i = 0; i < hashList.Length; i++)
                     hashList[i] = new List<KeyValuePair<uint,T>>();
                 // run first level hashes
