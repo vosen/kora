@@ -12,7 +12,7 @@ namespace UAM.Kora
         //private static uint SetSize = 2;
 
         Random random;
-        uint version;
+        uint pseudoCount;
         uint limit;
         InnerHashTable[] inner;
         Func<uint, uint> function;
@@ -26,7 +26,7 @@ namespace UAM.Kora
         // add overwrites
         public void Add(uint key, T value)
         {
-            if (++version > limit)
+            if (++pseudoCount > limit)
             {
                 RehashAll(new KeyValuePair<uint, T>(key, value));
                 return;
@@ -50,7 +50,7 @@ namespace UAM.Kora
             {
                 // Grow the second level
                 uint newLimit = limit = 2 * Math.Max(1, innerHashed.limit);
-                uint newSize = 2 * newLimit * (newLimit -1);
+                uint newSize = BitHacks.RoundToPower(2 * newLimit * (newLimit -1));
                 innerHashed.limit = newLimit;
                 innerHashed.RehashWith(key, value, this, innerHashed.table, (int)newSize);
             }
@@ -58,7 +58,7 @@ namespace UAM.Kora
 
         public void Remove(uint key)
         {
-            version++;
+            pseudoCount++;
             uint firstHash = function(key);
             uint secondHash = inner[firstHash].function(key);
             if (inner[firstHash].IsContained((int)secondHash))
@@ -66,7 +66,7 @@ namespace UAM.Kora
                 inner[firstHash].RemoveAt((int)secondHash);
             }
 
-            if (version >= limit)
+            if (pseudoCount >= limit)
                 RehashAll(null);
         }
 
@@ -86,17 +86,16 @@ namespace UAM.Kora
         internal Func<uint, uint> GetRandomHashMethod(uint size)
         {
             System.Diagnostics.Debug.Assert(size == BitHacks.RoundToPower(size));
-
             uint a = (uint)random.Next();
             uint b = (uint)(random.Next(65536) << 16);
             int shift = 31 - (int)BitHacks.Log2Ceiling(size);
-            // weird shifting because c# can shift 32 bit values by up to 31 bits
+            // weird shifting because c# can't shift uint by more than 31 bits
             return (x) =>  ((a * x + b) >> shift) >> 1;
         }
 
         private void RehashAll(KeyValuePair<uint, T>? newValue)
         {
-            List<KeyValuePair<uint, T>> elements = new List<KeyValuePair<uint,T>>((int)(newValue == null ? version : version + 1));
+            List<KeyValuePair<uint, T>> elements = new List<KeyValuePair<uint,T>>((int)(newValue == null ? pseudoCount : pseudoCount + 1));
             if(inner != null)
             {
                 int j = 0;
@@ -114,8 +113,8 @@ namespace UAM.Kora
                 if(newValue.HasValue)
                     elements.Add(newValue.Value);
             }
-            version = (uint)elements.Count;
-            float newLimit = (1.0f + Fill) * Math.Max(version, 4.0f);
+            pseudoCount = (uint)elements.Count;
+            float newLimit = (1.0f + Fill) * Math.Max(pseudoCount, 4.0f);
             limit = (uint)newLimit;
             // hashSize = s(M)
             uint hashSize = BitHacks.RoundToPower(limit << 1);

@@ -27,7 +27,7 @@ namespace KoraTests
             table.Add(5, "5");
             table.Add(6, "6");
             table.Add(7, "7");
-            //table.Add(8, "8");
+            table.Add(8, "8");
             string temp = null;
             Assert.IsTrue(table.TryGetValue(1, ref temp));
             Assert.AreEqual("1", temp);
@@ -35,6 +35,16 @@ namespace KoraTests
             Assert.AreEqual("2", temp);
             Assert.IsTrue(table.TryGetValue(3, ref temp));
             Assert.AreEqual("3", temp);
+            Assert.IsTrue(table.TryGetValue(4, ref temp));
+            Assert.AreEqual("4", temp);
+            Assert.IsTrue(table.TryGetValue(5, ref temp));
+            Assert.AreEqual("5", temp);
+            Assert.IsTrue(table.TryGetValue(6, ref temp));
+            Assert.AreEqual("6", temp);
+            Assert.IsTrue(table.TryGetValue(7, ref temp));
+            Assert.AreEqual("7", temp);
+            Assert.IsTrue(table.TryGetValue(8, ref temp));
+            Assert.AreEqual("8", temp);
         }
     }
 }
