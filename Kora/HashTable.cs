@@ -15,7 +15,9 @@ namespace UAM.Kora
         uint pseudoCount;
         uint limit;
         InnerHashTable[] inner;
-        Func<uint, uint> function;
+        internal uint a;
+        internal uint b;
+        internal int width;
 
         internal HashTable()
         {
@@ -31,9 +33,9 @@ namespace UAM.Kora
                 RehashAll(new KeyValuePair<uint, T>(key, value));
                 return;
             }
-            uint firstHash = function(key);
+            uint firstHash = GetHash(key);
             InnerHashTable innerHashed = inner[firstHash];
-            uint secondHash = innerHashed.function(key);
+            uint secondHash = innerHashed.GetHash(key);
             if (innerHashed.IsDeleted((int)secondHash))
             {
                 innerHashed.table[secondHash] = new KeyValuePair<uint, T>(key, value);
@@ -52,6 +54,7 @@ namespace UAM.Kora
                 uint newLimit = limit = 2 * Math.Max(1, innerHashed.limit);
                 uint newSize = BitHacks.RoundToPower(2 * newLimit * (newLimit -1));
                 innerHashed.limit = newLimit;
+                innerHashed.width = BitHacks.Power2MSB(newSize);
                 innerHashed.RehashWith(key, value, this, innerHashed.table, (int)newSize);
             }
         }
@@ -59,8 +62,8 @@ namespace UAM.Kora
         public void Remove(uint key)
         {
             pseudoCount++;
-            uint firstHash = function(key);
-            uint secondHash = inner[firstHash].function(key);
+            uint firstHash = GetHash(key);
+            uint secondHash = inner[firstHash].GetHash(key);
             if (inner[firstHash].IsContained((int)secondHash))
             {
                 inner[firstHash].RemoveAt((int)secondHash);
@@ -72,8 +75,8 @@ namespace UAM.Kora
 
         public bool TryGetValue(uint key, ref T value)
         {
-            uint firstHash = function(key);
-            uint secondHash = inner[firstHash].function(key);
+            uint firstHash = GetHash(key);
+            uint secondHash = inner[firstHash].GetHash(key);
             if (!inner[firstHash].IsContained((int)secondHash))
             {
                 return false;
@@ -83,6 +86,12 @@ namespace UAM.Kora
             return true;
         }
 
+        private uint GetHash(uint x)
+        {
+            return ((a * x + b) >> (31 - width)) >> 1;
+        }
+
+        /*
         internal Func<uint, uint> GetRandomHashMethod(uint size)
         {
             System.Diagnostics.Debug.Assert(size == BitHacks.RoundToPower(size));
@@ -92,6 +101,7 @@ namespace UAM.Kora
             // weird shifting because c# can't shift uint by more than 31 bits
             return (x) =>  ((a * x + b) >> shift) >> 1;
         }
+         * */
 
         private void RehashAll(KeyValuePair<uint, T>? newValue)
         {
@@ -118,18 +128,19 @@ namespace UAM.Kora
             limit = (uint)newLimit;
             // hashSize = s(M)
             uint hashSize = BitHacks.RoundToPower(limit << 1);
+            width = BitHacks.Power2MSB(hashSize);
             List<KeyValuePair<uint, T>>[] hashList = null;
             // find suitable higher level function
             for(bool injective = false; !injective;)
             {
-                function = GetRandomHashMethod(hashSize);
+                InitializeRandomHash();
                 hashList = new List<KeyValuePair<uint, T>>[hashSize];
                 // initialize provisional list of eleemnts going into second level table
                 for (int i = 0; i < hashList.Length; i++)
                     hashList[i] = new List<KeyValuePair<uint,T>>();
                 // run first level hashes
                 foreach (var elm in elements)
-                    hashList[function(elm.Key)].Add(elm);
+                    hashList[GetHash(elm.Key)].Add(elm);
                 var testTable = new InnerHashTable[hashSize];
                 injective = SatisfiesMagicalCondition(hashList, limit);
             }
@@ -141,10 +152,10 @@ namespace UAM.Kora
                 while (true)
                 {
                     inner[i].Clear();
-                    inner[i].function = GetRandomHashMethod(inner[i].AllocatedSize);
+                    inner[i].InitializeRandomHash(this);
                     for (int j = 0; j < hashList[i].Count; j++)
                     {
-                        uint hash = inner[i].function(hashList[i][j].Key);
+                        uint hash = inner[i].GetHash(hashList[i][j].Key);
                         if(inner[i].IsContained((int)hash))
                             // don't judge me
                             goto Failed;
@@ -155,6 +166,12 @@ namespace UAM.Kora
                     continue;
                 }
             }
+        }
+
+        private void InitializeRandomHash()
+        {
+            a = (uint)random.Next();
+            b = (uint)(random.Next(65536) << 16);
         }
 
         private bool SatisfiesMagicalCondition(List<KeyValuePair<uint,T>>[] inner, uint currLimit)

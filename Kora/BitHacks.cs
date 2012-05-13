@@ -8,18 +8,12 @@ namespace UAM.Kora
 {
     internal static class BitHacks
     {
-        private static uint[] BitTable = { 0xAAAAAAAA, 0xCCCCCCCC, 0xF0F0F0F0, 0xFF00FF00, 0xFFFF0000 };
+        private static int[] MultiplyDeBruijnBitPosition2 = { 0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9 };
 
-        internal static uint Log2Ceiling(uint v)
+        internal static int Power2MSB(uint v)
         {
-           v = RoundToPower(v);
-            // v is now rounded to the next power of 2
-            int r = (v & BitTable[0]) == 0 ? 0 : 1;
-            r |= ((v & BitTable[4]) == 0 ? 0 : 1) << 4;
-            r |= ((v & BitTable[3]) == 0 ? 0 : 1) << 3;
-            r |= ((v & BitTable[2]) == 0 ? 0 : 1) << 2;
-            r |= ((v & BitTable[1]) == 0 ? 0 : 1) << 1;
-            return (uint)r;
+            System.Diagnostics.Debug.Assert(v == RoundToPower(v));
+            return MultiplyDeBruijnBitPosition2[(v * 0x077CB531U) >> 27];
         }
 
         internal static uint RoundToPower(uint v)

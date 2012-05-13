@@ -13,15 +13,18 @@ namespace UAM.Kora
             internal uint count;
             internal uint limit;
             internal KeyValuePair<uint, T>?[] table;
-            internal Func<uint, uint> function;
+            // hashing arguments
+            uint a;
+            uint b;
+            internal int width;
 
             internal InnerHashTable(uint length)
             {
                 count = length;
                 limit = 2 * length;
                 uint hashSize = BitHacks.RoundToPower(2 * limit * (limit - 1));
+                width = BitHacks.Power2MSB(hashSize);
                 table = new KeyValuePair<uint, T>?[hashSize];
-                // function is initialized outside
             }
 
             internal void Clear()
@@ -64,12 +67,12 @@ namespace UAM.Kora
                 // we've got temp list ready, now try and find suitable function
                 while (true)
                 {
-                    function = parent.GetRandomHashMethod((uint)size);
+                    InitializeRandomHash(parent);
                     KeyValuePair<uint, T>?[] newTable = new KeyValuePair<uint, T>?[size];
                     // put them pairs where they belong
                     for (int i = 0; i < tempList.Length; i++)
                     {
-                        uint index = function(tempList[i].Key);
+                        uint index = GetHash(tempList[i].Key);
                         if (newTable[index] != null)
                             goto Failed;
                         newTable[index] = tempList[i];
@@ -79,6 +82,17 @@ namespace UAM.Kora
                 Failed:
                     continue;
                 }
+            }
+
+            internal void InitializeRandomHash(HashTable<T> parent)
+            {
+                a = (uint)parent.random.Next();
+                b = (uint)(parent.random.Next(65536) << 16);
+            }
+
+            internal uint GetHash(uint x)
+            {
+                return ((a * x + b) >> (31 - width)) >> 1;
             }
         }
     }

@@ -31,17 +31,19 @@ namespace UAM.KoraTests
         public void LogCeiling()
         {
             uint a = 2;
-            Assert.AreEqual(1, BitHacks.Log2Ceiling(a));
-            a = 3;
-            Assert.AreEqual(2, BitHacks.Log2Ceiling(a));
+            Assert.AreEqual(1, BitHacks.Power2MSB(a));
+            a = 4;
+            Assert.AreEqual(2, BitHacks.Power2MSB(a));
+            a = 8;
+            Assert.AreEqual(3, BitHacks.Power2MSB(a));
+            a = 16;
+            Assert.AreEqual(4, BitHacks.Power2MSB(a));
+            a = 32;
+            Assert.AreEqual(5, BitHacks.Power2MSB(a));
+            a = 64;
+            Assert.AreEqual(6, BitHacks.Power2MSB(a));
             a = 128;
-            Assert.AreEqual(7, BitHacks.Log2Ceiling(a));
-            a = 65;
-            Assert.AreEqual(7, BitHacks.Log2Ceiling(a));
-            a = 999;
-            Assert.AreEqual(10, BitHacks.Log2Ceiling(a));
-            a = 1;
-            Assert.AreEqual(0, BitHacks.Log2Ceiling(a));
+            Assert.AreEqual(7, BitHacks.Power2MSB(a));
         }
     }
 }

@@ -15,9 +15,13 @@ namespace Kora.Microbenchmarks
         static void Main(string[] args)
         {
             uint m = BitHacks.RoundToPower((uint)random.Next(1000, int.MaxValue/2));
+            int width = (int)BitHacks.Log2Ceiling(m);
             var fks = GetRandomHashMethodFKS(m);
-            var nomod = GetRandomHashMethod(m);
+            var nomod1 = GetRandomHashMethod1(m);
+            var nomod2 = GetRandomHashMethod2(width);
             var randoms = Enumerable.Range(0, 100000000).Select((i) => (uint)random.Next((int)m)).ToArray();
+            uint a = (uint)random.Next();
+            uint b = (uint)(random.Next(65536) << 16);
             var watch = new Stopwatch();
             watch.Start();
             for (int i = 0; i < randoms.Length; i++)
@@ -26,50 +30,67 @@ namespace Kora.Microbenchmarks
             Console.WriteLine("fks: {0}", watch.ElapsedMilliseconds);
             watch.Restart();
             for (int i = 0; i < randoms.Length; i++)
-                nomod(randoms[i]);
+                nomod1(randoms[i]);
             watch.Stop();
-            Console.WriteLine("nomod: {0}", watch.ElapsedMilliseconds);
-            uint a = (uint)random.Next();
-            uint b = (uint)(random.Next(65536) << 16);
+            Console.WriteLine("nomod by size: {0}", watch.ElapsedMilliseconds);
             watch.Restart();
             for (int i = 0; i < randoms.Length; i++)
-                UnrolledHash1(a,b, (int)m, randoms[i]);
+                nomod2(randoms[i]);
             watch.Stop();
-            Console.WriteLine("unrolled1: {0}", watch.ElapsedMilliseconds);
+            Console.WriteLine("nomod by width: {0}", watch.ElapsedMilliseconds);
             watch.Restart();
             for (int i = 0; i < randoms.Length; i++)
-                UnrolledHash2(a, b, (int)m, randoms[i]);
+                UnrolledHash1(a, b, width, randoms[i]);
             watch.Stop();
-            Console.WriteLine("unrolled2: {0}", watch.ElapsedMilliseconds);
+            Console.WriteLine("unrolled conditional: {0}", watch.ElapsedMilliseconds);
+            watch.Restart();
+            for (int i = 0; i < randoms.Length; i++)
+                UnrolledHash2(a, b, width, randoms[i]);
+            watch.Stop();
+            Console.WriteLine("unrolled shift by width: {0}", watch.ElapsedMilliseconds);
+            watch.Restart();
+            for (int i = 0; i < randoms.Length; i++)
+                UnrolledHash3(a, b, m, randoms[i]);
+            watch.Stop();
+            Console.WriteLine("unrolled shift by size: {0}", watch.ElapsedMilliseconds);
         }
 
         internal static Func<uint, uint> GetRandomHashMethodFKS(uint size)
         {
-            System.Diagnostics.Debug.Assert(size == BitHacks.RoundToPower(size));
-
             uint a = (uint)random.Next(1, int.MaxValue);
             uint b = (uint)(random.Next());
             return (x) => ((a * x + b) % 31) % size;
         }
 
-        internal static Func<uint, uint> GetRandomHashMethod(uint size)
+        internal static Func<uint, uint> GetRandomHashMethod1(uint size)
         {
-            System.Diagnostics.Debug.Assert(size == BitHacks.RoundToPower(size));
-
             uint a = (uint)random.Next();
             uint b = (uint)(random.Next(65536) << 16);
-            int shift = 32 - (int)size;
-            return (x) => (a * x + b) >> shift;
+            int shift = 31 - (int)BitHacks.Log2Ceiling(size);
+            return (x) => ((a * x + b) >> shift) >> 1;
         }
 
-        internal static uint UnrolledHash1(uint a, uint b, int size, uint x)
+        internal static Func<uint, uint> GetRandomHashMethod2(int width)
         {
-            return size == 0 ? 0 : (a * x + b) >> (32 - size);
+            uint a = (uint)random.Next();
+            uint b = (uint)(random.Next(65536) << 16);
+            int shift = 31 - (int)width;
+            return (x) => ((a * x + b) >> shift) >> 1;
         }
 
-        internal static uint UnrolledHash2(uint a, uint b, int size, uint x)
+        internal static uint UnrolledHash1(uint a, uint b, int width, uint x)
         {
-            return ((a * x + b) >> (33 - size)) >> 1;
+            return width == 0 ? 0 : ((a * x + b) >> (31 - (int)width)) >> 1;
+        }
+
+        internal static uint UnrolledHash2(uint a, uint b, int width, uint x)
+        {
+            return ((a * x + b) >> (31 - (int)width)) >> 1;
+        }
+
+        internal static uint UnrolledHash3(uint a, uint b, uint size, uint x)
+        {
+            return ((a * x + b) >> (31 - (int)BitHacks.Log2Ceiling(size))) >> 1;
         }
     }
 }
