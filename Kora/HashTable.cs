@@ -96,7 +96,7 @@ namespace UAM.Kora
 
         private void RehashAll(KeyValuePair<uint, T>? newValue)
         {
-            KeyValuePair<uint, T>[] elements = new KeyValuePair<uint,T>[newValue == null ? version : version + 1];
+            List<KeyValuePair<uint, T>> elements = new List<KeyValuePair<uint,T>>((int)(newValue == null ? version : version + 1));
             if(inner != null)
             {
                 int j = 0;
@@ -106,15 +106,15 @@ namespace UAM.Kora
                     {
                         if (table.IsContained(i))
                         {
-                            elements[j] = table.table[i].Value;
+                            elements.Add(table.table[i].Value);
                             j++;
                         }
                     }
                 }
                 if(newValue.HasValue)
-                    elements[j] = newValue.Value;
+                    elements.Add(newValue.Value);
             }
-            version = (uint)elements.LongLength;
+            version = (uint)elements.Count;
             float newLimit = (1.0f + Fill) * Math.Max(version, 4.0f);
             limit = (uint)newLimit;
             // hashSize = s(M)
@@ -149,7 +149,7 @@ namespace UAM.Kora
                         if(inner[i].IsContained((int)hash))
                             // don't judge me
                             goto Failed;
-                        inner[i].table[j] = hashList[i][j];
+                        inner[i].table[hash] = hashList[i][j];
                     }
                     break;
                 Failed:
