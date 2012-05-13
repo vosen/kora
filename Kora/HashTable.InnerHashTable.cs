@@ -7,15 +7,15 @@ namespace UAM.Kora
 {
     internal partial class HashTable<T>
     {
-        private class InnerHashTable
+        internal class InnerHashTable
         {
             // table-size is table.Length
             internal uint count;
             internal uint limit;
             internal KeyValuePair<uint, T>?[] table;
             // hashing arguments
-            uint a;
-            uint b;
+            internal uint a;
+            internal uint b;
             internal int width;
 
             internal InnerHashTable(uint length)
@@ -39,6 +39,7 @@ namespace UAM.Kora
 
             internal void RemoveAt(int idx)
             {
+                count--;
                 table[idx] = null;
             }
 
@@ -54,7 +55,7 @@ namespace UAM.Kora
 
             internal void RehashWith(uint key, T value, HashTable<T> parent, KeyValuePair<uint, T>?[] oldTable, int size)
             {
-                var tempList = new KeyValuePair<uint, T>[count];
+                var tempList = new KeyValuePair<uint, T>[count+1];
                 for (int i = 0, j = 0; i < oldTable.Length; i++)
                 {
                     if (oldTable[i] != null)
@@ -63,7 +64,7 @@ namespace UAM.Kora
                         j++;
                     }
                 }
-                tempList[count - 1] = new KeyValuePair<uint, T>(key, value);
+                tempList[count] = new KeyValuePair<uint, T>(key, value);
                 // we've got temp list ready, now try and find suitable function
                 while (true)
                 {
@@ -84,15 +85,18 @@ namespace UAM.Kora
                 }
             }
 
-            internal void InitializeRandomHash(HashTable<T> parent)
-            {
-                a = (uint)parent.random.Next();
-                b = (uint)(parent.random.Next(65536) << 16);
-            }
-
             internal uint GetHash(uint x)
             {
-                return ((a * x + b) >> (31 - width)) >> 1;
+#if DEBUG
+                return ((a * x + b) % 997) % (uint)Math.Pow(2, this.width);
+#else
+            return ((a * x + b) >> (31 - width)) >> 1;
+#endif
+            }
+
+            internal void InitializeRandomHash(HashTable<T> hashTable)
+            {
+                hashTable.InitializeRandomHash(out a, out b);
             }
         }
     }

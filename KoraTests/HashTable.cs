@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using UAM.Kora;
 
-namespace KoraTests
+namespace UAM.KoraTests
 {
     [TestFixture]
     class HashTable
@@ -45,6 +45,27 @@ namespace KoraTests
             Assert.AreEqual("7", temp);
             Assert.IsTrue(table.TryGetValue(8, ref temp));
             Assert.AreEqual("8", temp);
+        }
+
+        [Test]
+        public void AddWithCollision()
+        {
+            var table = new HashTable<string>();
+            table.Add(1, "1");
+            uint firstHash = table.GetHash(1);
+            uint collision = 2;
+            while(!(table.GetHash(collision) == firstHash))
+            {
+                collision++;
+            }
+            // HACK WARNING: I create collision instead of generating it
+            uint secondHash = table.inner[firstHash].GetHash(collision);
+            table.inner[firstHash].a = 0;
+            table.inner[firstHash].b = secondHash;
+            table.Add(collision, collision.ToString());
+            string temp = null;
+            Assert.IsTrue(table.TryGetValue(collision, ref temp));
+            Assert.AreEqual(collision.ToString(), temp);
         }
     }
 }
