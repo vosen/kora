@@ -47,6 +47,7 @@ namespace UAM.KoraTests
             Assert.AreEqual("8", temp);
         }
 
+#if DEBUG
         [Test]
         public void AddWithCollision()
         {
@@ -67,5 +68,6 @@ namespace UAM.KoraTests
             Assert.IsTrue(table.TryGetValue(collision, ref temp));
             Assert.AreEqual(collision.ToString(), temp);
         }
+#endif
     }
 }
