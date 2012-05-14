@@ -82,12 +82,13 @@ namespace UAM.Kora
                 RehashAll(null);
         }
 
-        public bool TryGetValue(uint key, ref T value)
+        public bool TryGetValue(uint key, out T value)
         {
             uint firstHash = GetHash(key);
             uint secondHash = inner[firstHash].GetHash(key);
             if (!inner[firstHash].IsContained((int)secondHash))
             {
+                value = default(T);
                 return false;
             }
             var returnValue = inner[firstHash].table[secondHash];

@@ -50,21 +50,21 @@ namespace UAM.KoraTests
             table.Add(8, "8");
             CheckInnerTables(table);
             string temp = null;
-            Assert.IsTrue(table.TryGetValue(1, ref temp));
+            Assert.IsTrue(table.TryGetValue(1, out temp));
             Assert.AreEqual("1", temp);
-            Assert.IsTrue(table.TryGetValue(2, ref temp));
+            Assert.IsTrue(table.TryGetValue(2, out temp));
             Assert.AreEqual("2", temp);
-            Assert.IsTrue(table.TryGetValue(3, ref temp));
+            Assert.IsTrue(table.TryGetValue(3, out temp));
             Assert.AreEqual("3", temp);
-            Assert.IsTrue(table.TryGetValue(4, ref temp));
+            Assert.IsTrue(table.TryGetValue(4, out temp));
             Assert.AreEqual("4", temp);
-            Assert.IsTrue(table.TryGetValue(5, ref temp));
+            Assert.IsTrue(table.TryGetValue(5, out temp));
             Assert.AreEqual("5", temp);
-            Assert.IsTrue(table.TryGetValue(6, ref temp));
+            Assert.IsTrue(table.TryGetValue(6, out temp));
             Assert.AreEqual("6", temp);
-            Assert.IsTrue(table.TryGetValue(7, ref temp));
+            Assert.IsTrue(table.TryGetValue(7, out temp));
             Assert.AreEqual("7", temp);
-            Assert.IsTrue(table.TryGetValue(8, ref temp));
+            Assert.IsTrue(table.TryGetValue(8, out temp));
             Assert.AreEqual("8", temp);
         }
 
@@ -88,7 +88,7 @@ namespace UAM.KoraTests
             table.Add(collision, collision.ToString());
             CheckInnerTables(table);
             string temp = null;
-            Assert.IsTrue(table.TryGetValue(collision, ref temp));
+            Assert.IsTrue(table.TryGetValue(collision, out temp));
             Assert.AreEqual(collision.ToString(), temp);
         }
 #endif
@@ -106,7 +106,7 @@ namespace UAM.KoraTests
             }
             for (uint i = 0; i < size; i++)
             {
-                Assert.IsTrue(table.TryGetValue(i, ref temp));
+                Assert.IsTrue(table.TryGetValue(i, out temp));
                 Assert.AreEqual(i.ToString(), temp);
             }
             for (uint i = 0; i < size; i++)
@@ -116,7 +116,7 @@ namespace UAM.KoraTests
             }
             for (uint i = 0; i < size; i++)
             {
-                Assert.IsFalse(table.TryGetValue(i, ref temp));
+                Assert.IsFalse(table.TryGetValue(i, out temp));
             }
         }
     }

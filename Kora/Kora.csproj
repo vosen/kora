@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitHacks.cs" />
+    <Compile Include="XFastTrie.LeafNode.cs" />
     <Compile Include="ICollectionHelpers.cs" />
     <Compile Include="HashTable.InnerHashTable.cs" />
     <Compile Include="ISortedDictionary.cs" />
@@ -49,6 +50,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VEBTree.KeyCollection.cs" />
     <Compile Include="VEBTree.ValueCollection.cs" />
+    <Compile Include="XFastTrie.cs" />
+    <Compile Include="XFastTrie.Node.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
