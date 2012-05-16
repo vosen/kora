@@ -24,52 +24,82 @@ namespace UAM.Kora
         {
             int l = 0;
             int h = width;
-            Node node = null;
+            Node tempNode;
+            Node correctNode = null;
             do
             {
                 int j = (l + h) / 2;
                 uint ancestor = key >> (width - j);
-                if (!table[j].TryGetValue(ancestor, out node))
+                if (table[j].TryGetValue(ancestor, out tempNode))
                 {
-                    h = j;
+                    l = j;
+                    correctNode = tempNode;
                 }
                 else
                 {
-                    l = j;
+                    h = j;
                 }
             }
-            while (h - l <= 1);
-            return node;
+            while (h - l > 1);
+            return correctNode;
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.First()
+        private void InsertLeafAfter(Node marker, LeafNode newLeaf)
         {
-            throw new NotImplementedException();
+            if (marker == null)
+            {
+                leafList = newLeaf;
+                newLeaf.left = newLeaf;
+                newLeaf.right = newLeaf;
+                return;
+            }
+            Node rightNode = marker.right;
+            marker.right = newLeaf;
+            newLeaf.left = marker;
+            newLeaf.right = rightNode;
+            rightNode.left = newLeaf;
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.Last()
+        public KeyValuePair<uint, T>? First()
         {
-            throw new NotImplementedException();
+            if (leafList == null)
+                return null;
+            return new KeyValuePair<uint,T>(leafList.key, leafList.value);
+        }
+
+        public KeyValuePair<uint, T>? Last()
+        {
+            if (leafList == null)
+                return null;
+            if (leafList.left == leafList)
+                return new KeyValuePair<uint, T>(leafList.key, leafList.value);
+            LeafNode leftLeaf = (LeafNode)leafList.left;
+            return new KeyValuePair<uint, T>(leftLeaf.key, leftLeaf.value);
+        }
+
+        private LeafNode LowerNodeFromBottom(Node bottom, uint key)
+        {
+            if (bottom == null)
+                return null;
+            LeafNode leaf = bottom.right as LeafNode;
+            if (leaf != null && leaf.key < key)
+                return leaf;
+            leaf = bottom.left as LeafNode;
+            if (leaf != null && leaf.key < key)
+                return leaf;
+            if (bottom.left != null)
+            {
+                leaf = bottom.left.left as LeafNode;
+                if (leaf != null && leaf.key < key)
+                    return leaf;
+            }
+            return null;
         }
 
         private LeafNode LowerNode(uint key)
         {
             Node ancestor = Bottom(key);
-            if (ancestor == null)
-                return null;
-            LeafNode leaf = ancestor.right as LeafNode;
-            if (leaf != null && leaf.key < key)
-                return leaf;
-            leaf = ancestor.left as LeafNode;
-            if (leaf != null && leaf.key < key)
-                return leaf;
-            if (ancestor.left != null)
-            {
-                leaf = ancestor.left.left as LeafNode;
-                if (leaf != null && leaf.key < key)
-                    return leaf;
-            }
-            return null;
+            return LowerNodeFromBottom(ancestor, key);
         }
 
         private LeafNode HigherNode(uint key)
@@ -110,7 +140,69 @@ namespace UAM.Kora
 
         private void AddChecked(uint key, T value, bool overwrite)
         {
+            // Insert node in linked list
+            Node bottom = Bottom(key);
+            LeafNode predecessor = LowerNodeFromBottom(bottom, key);
+            // check for overwrite
+            if (predecessor != null)
+            {
+                LeafNode predRight = (LeafNode)predecessor.right;
+                if (predRight.key == key)
+                {
+                    if (!overwrite)
+                        throw new ArgumentException();
+                    else
+                    {
+                        predRight.value = value;
+                        return;
+                    }
+                }
+            }
+            // merrily continue
+            LeafNode endNode = new LeafNode() { key = key, value = value };
+            InsertLeafAfter(predecessor, endNode);
+            // Fix the jump path
+            if (bottom == null)
+            {
+                bottom = new Node();
+                table[0].Add(0, bottom);
+                bottom.left = endNode;
+                bottom.right = endNode;
+            }
 
+            Node oldNode = null;
+            Node current;
+            for (int i = 0; i < width; i++)
+            {
+                uint id = key >> (width - 1 - i) >> 1;
+                if (table[i].TryGetValue(id, out current))
+                {
+                    // fix the jump path
+                    LeafNode leaf = current.left as LeafNode;
+                    if (leaf != null && leaf.key > key)
+                    {
+                        current.left = endNode;
+                    }
+                    else
+                    {
+                        leaf = current.right as LeafNode;
+                        if(leaf != null && leaf.key < key)
+                            current.right = endNode;
+                    }
+                }
+                else
+                {
+                    // insert new node
+                    current = new Node() { left = endNode, right = endNode };
+                    table[i].Add(id, current);
+                    // fix link between old and new node
+                    if ((id & 1) > 0)
+                        oldNode.right = current;
+                    else
+                        oldNode.left = current;
+                }
+                oldNode = current;
+            }
         }
 
         public void Add(uint key, T value)
@@ -165,11 +257,15 @@ namespace UAM.Kora
             get { throw new NotImplementedException(); }
         }
 
-        T IDictionary<uint, T>.this[uint key]
+        public T this[uint key]
         {
             get
             {
-                throw new NotImplementedException();
+                T temp;
+                if (TryGetValue(key, out temp))
+                    return temp;
+                else
+                    throw new KeyNotFoundException();
             }
             set
             {
