@@ -29,10 +29,10 @@ namespace UAM.Kora
             do
             {
                 int j = (l + h) / 2;
-                uint ancestor = key >> (width - j);
+                uint ancestor = key >> (width - 1 - j) >> 1;
                 if (table[j].TryGetValue(ancestor, out tempNode))
                 {
-                    l = j;
+                    l = j + 1;
                     correctNode = tempNode;
                 }
                 else
@@ -40,7 +40,7 @@ namespace UAM.Kora
                     h = j;
                 }
             }
-            while (h - l > 1);
+            while (l < h);
             return correctNode;
         }
 
