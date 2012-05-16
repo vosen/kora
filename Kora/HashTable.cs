@@ -86,14 +86,13 @@ namespace UAM.Kora
         {
             uint firstHash = GetHash(key);
             uint secondHash = inner[firstHash].GetHash(key);
-            if (!inner[firstHash].IsContained((int)secondHash))
+            if (inner[firstHash].IsContained((int)secondHash) && inner[firstHash].table[secondHash].Value.Key == key)
             {
-                value = default(T);
-                return false;
+                value = inner[firstHash].table[secondHash].Value.Value;
+                return true;
             }
-            var returnValue = inner[firstHash].table[secondHash];
-            value = returnValue.Value.Value;
-            return true;
+            value = default(T);
+            return false;
         }
 
         internal uint GetHash(uint x)
