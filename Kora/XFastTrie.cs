@@ -92,7 +92,7 @@ namespace UAM.Kora
             return null;
         }
 
-        KeyValuePair<uint, T>? Lower(uint key)
+        public KeyValuePair<uint, T>? Lower(uint key)
         {
             var lower = LowerNode(key);
             if (lower == null)
