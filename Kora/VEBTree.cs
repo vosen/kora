@@ -56,7 +56,7 @@ namespace UAM.Kora
             return (x << (width/2)) + y;
         }
 
-        public void AddChecked(uint key, T value, bool overwrite)
+        private void AddChecked(uint key, T value, bool overwrite)
         {
 
             if (key >= (1 << width))
