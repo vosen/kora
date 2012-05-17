@@ -158,6 +158,7 @@ namespace UAM.Kora
                     }
                 }
             }
+            count++;
             // merrily continue
             LeafNode endNode = new LeafNode() { key = key, value = value };
             InsertLeafAfter(predecessor, endNode);
@@ -220,9 +221,66 @@ namespace UAM.Kora
             get { throw new NotImplementedException(); }
         }
 
-        bool IDictionary<uint, T>.Remove(uint key)
+        private void RemoveLeaf(LeafNode leaf)
         {
-            throw new NotImplementedException();
+            Node right = leaf.right;
+            if (right == leaf)
+            {
+                leafList = null;
+            }
+            else
+            {
+                leaf.left.right = right;
+                right.left = leaf.left;
+            }
+        }
+
+        public bool Remove(uint key)
+        {
+            var bottom = Bottom(key);
+            // get the leaf node in endNode
+            LeafNode endNode = bottom.left as LeafNode;
+            if(endNode == null || endNode.key != key)
+            {
+                endNode = bottom.right as LeafNode;
+                if(endNode == null || endNode.key != key )
+                    return false;
+            }
+            // get pointers to node elft and right from endNode
+            Node leftLeaf = endNode.left;
+            Node rightLeaf = endNode.right;
+            // remove bottom node from the table and leaf node from the list
+            table[width - 1].Remove(key >> 1);
+            RemoveLeaf(endNode);
+            // iterate levels
+            bool single = true;
+            Node old = bottom;
+            for(int i = width - 2; i >= 0; i--)
+            {
+                Node current;
+                uint id = key >> (width - 1 - i) >> 1;
+                bool isFromRight = ((key >> (width - 1 - i) >> 2) & 1) == 1;
+                table[i].TryGetValue(id, out current);
+                // remove the node
+                if (single)
+                {
+                    if ((isFromRight && !(current.left is LeafNode)) || (!isFromRight && !(current.right is LeafNode)))
+                        single = false;
+                    else
+                        table[i].Remove(id);
+                }
+                // fix jump pointers
+                else
+                {
+                    if (current.left == endNode)
+                        current.right = rightLeaf;
+                    else if (current.right == endNode)
+                        current.left = leftLeaf;
+                }
+                old = current;
+            }
+            count--;
+            return true;
         }
 
         public bool TryGetValue(uint key, out T value)
