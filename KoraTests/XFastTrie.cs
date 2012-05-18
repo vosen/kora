@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using UAM.Kora;
+using KVP = System.Collections.Generic.KeyValuePair<uint, string>;
 
 namespace UAM.KoraTests
 {
@@ -61,11 +62,15 @@ namespace UAM.KoraTests
             Assert.IsFalse(trie.TryGetValue(0, out temp));
             Assert.IsTrue(trie.TryGetValue(1, out temp));
             Assert.AreEqual("1", temp);
+            Assert.IsTrue(trie.Remove(1));
             trie.Add(110, "110");
             Assert.IsTrue(trie.Remove(110));
             Assert.IsFalse(trie.Remove(110));
+            Assert.IsFalse(trie.TryGetValue(110, out temp));
             trie.Add(270, "270");
             trie.Add(182, "182");
+            trie.Add(180, "180");
+            trie.Add(184, "184");
             trie.Add(40, "40");
             trie.Add(200, "200");
             trie.Add(461, "461");
@@ -74,7 +79,61 @@ namespace UAM.KoraTests
             Assert.IsFalse(trie.Remove(370));
             Assert.IsFalse(trie.Remove(110));
             Assert.IsTrue(trie.Remove(461));
+            Assert.IsFalse(trie.TryGetValue(461, out temp));
             Assert.IsFalse(trie.Remove(461));
+            Assert.IsTrue(trie.Remove(184));
+            Assert.IsFalse(trie.TryGetValue(184, out temp));
+            Assert.IsTrue(trie.Remove(763));
+            Assert.False(trie.TryGetValue(763, out temp));
+        }
+
+        [Test]
+        public void AddWithOverwrite()
+        {
+            XFastTrie<string> trie = new XFastTrie<string>();
+            string temp;
+            trie.Add(1, "1");
+            Assert.Throws<ArgumentException>(() => trie.Add(1, "2"));
+            Assert.AreEqual("1", trie[1]);
+            Assert.DoesNotThrow(() => trie[1] = "one");
+            Assert.AreEqual("one", trie[1]);
+        }
+
+        [Test]
+        public void LowerHigher()
+        {
+            XFastTrie<string> trie = new XFastTrie<string>();
+            Assert.IsNull(trie.Lower(uint.MaxValue));
+            Assert.IsNull(trie.Higher(uint.MinValue));
+            trie.Add(699, "699");
+            trie.Add(477, "477");
+            trie.Add(840, "840");
+            trie.Add(324, "324");
+            trie.Add(750, "750");
+            trie.Add(751, "751");
+            trie.Add(563, "563");
+            trie.Add(913, "913");
+            Assert.IsNull(trie.Lower(324));
+            Assert.IsNull(trie.Higher(913));
+            Assert.AreEqual(new KVP(563, "563"), trie.Lower(654));
+            Assert.AreEqual(new KVP(699, "699"), trie.Higher(654));
+            Assert.AreEqual(new KVP(750, "750"), trie.Lower(751));
+            Assert.AreEqual(new KVP(751, "751"), trie.Higher(750));
+            Assert.AreEqual(new KVP(840, "840"), trie.Higher(751));
+        }
+
+        [Test]
+        public void FirstLast()
+        {
+            XFastTrie<string> trie = new XFastTrie<string>();
+            Assert.IsNull(trie.First());
+            Assert.IsNull(trie.Last());
+            trie.Add(100, "100");
+            Assert.AreEqual(new KVP(100, "100"), trie.First());
+            Assert.AreEqual(new KVP(100, "100"), trie.Last());
+            trie.Add(200, "200");
+            Assert.AreEqual(new KVP(100, "100"), trie.First());
+            Assert.AreEqual(new KVP(200, "200"), trie.Last());
         }
     }
 }

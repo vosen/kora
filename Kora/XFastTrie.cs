@@ -101,12 +101,9 @@ namespace UAM.Kora
             leaf = bottom.left as LeafNode;
             if (leaf != null && leaf.key < key)
                 return leaf;
-            if (bottom.left != null)
-            {
-                leaf = bottom.left.left as LeafNode;
-                if (leaf != null && leaf.key < key)
-                    return leaf;
-            }
+            leaf = bottom.left.left as LeafNode;
+            if (leaf != null && leaf.key < key)
+                return leaf;
             return null;
         }
 
@@ -127,12 +124,9 @@ namespace UAM.Kora
             leaf = ancestor.right as LeafNode;
             if (leaf != null && leaf.key > key)
                 return leaf;
-            if (ancestor.right != null)
-            {
-                leaf = ancestor.right.right as LeafNode;
-                if (leaf != null && leaf.key > key)
-                    return leaf;
-            }
+            leaf = ancestor.right.right as LeafNode;
+            if (leaf != null && leaf.key > key)
+                return leaf;
             return null;
         }
 
@@ -158,18 +152,19 @@ namespace UAM.Kora
             Node bottom = Bottom(key);
             LeafNode predecessor = LowerNodeFromBottom(bottom, key);
             // check for overwrite
+            LeafNode predRight;
             if (predecessor != null)
+                predRight = (LeafNode)predecessor.right;
+            else
+                predRight = leafList;
+            if (predRight != null && predRight.key == key)
             {
-                LeafNode predRight = (LeafNode)predecessor.right;
-                if (predRight.key == key)
+                if (!overwrite)
+                    throw new ArgumentException();
+                else
                 {
-                    if (!overwrite)
-                        throw new ArgumentException();
-                    else
-                    {
-                        predRight.value = value;
-                        return;
-                    }
+                    predRight.value = value;
+                    return;
                 }
             }
             count++;
