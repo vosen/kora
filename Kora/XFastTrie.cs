@@ -48,16 +48,30 @@ namespace UAM.Kora
         {
             if (marker == null)
             {
-                leafList = newLeaf;
-                newLeaf.left = newLeaf;
-                newLeaf.right = newLeaf;
-                return;
+                if (leafList == null)
+                {
+                    leafList = newLeaf;
+                    newLeaf.left = newLeaf;
+                    newLeaf.right = newLeaf;
+                }
+                else
+                {
+                    Node rightNode = leafList;
+                    leafList.left.right = newLeaf;
+                    newLeaf.left = leafList.left;
+                    newLeaf.right = leafList;
+                    leafList.left = newLeaf;
+                    leafList = newLeaf;
+                }
             }
-            Node rightNode = marker.right;
-            marker.right = newLeaf;
-            newLeaf.left = marker;
-            newLeaf.right = rightNode;
-            rightNode.left = newLeaf;
+            else
+            {
+                Node rightNode = marker.right;
+                marker.right = newLeaf;
+                newLeaf.left = marker;
+                newLeaf.right = rightNode;
+                rightNode.left = newLeaf;
+            }
         }
 
         public KeyValuePair<uint, T>? First()
@@ -238,6 +252,8 @@ namespace UAM.Kora
         public bool Remove(uint key)
         {
             var bottom = Bottom(key);
+            if (bottom == null)
+                return false;
             // get the leaf node in endNode
             LeafNode endNode = bottom.left as LeafNode;
             if(endNode == null || endNode.key != key)
@@ -250,24 +266,33 @@ namespace UAM.Kora
             Node leftLeaf = endNode.left;
             Node rightLeaf = endNode.right;
             // remove bottom node from the table and leaf node from the list
-            table[width - 1].Remove(key >> 1);
+            //table[width - 1].Remove(key >> 1);
             RemoveLeaf(endNode);
             // iterate levels
             bool single = true;
-            Node old = bottom;
-            for(int i = width - 2; i >= 0; i--)
+            for(int i = width - 1; i >= 0; i--)
             {
                 Node current;
                 uint id = key >> (width - 1 - i) >> 1;
-                bool isFromRight = ((key >> (width - 1 - i) >> 2) & 1) == 1;
+                bool isFromRight = ((key >> (width - 1 - i)) & 1) == 1;
                 table[i].TryGetValue(id, out current);
                 // remove the node
                 if (single)
                 {
-                    if ((isFromRight && !(current.left is LeafNode)) || (!isFromRight && !(current.right is LeafNode)))
+                    if (isFromRight && (!(current.left is LeafNode) || (i == (width - 1) && ((LeafNode)current.left).key != key)))
+                    {
+                        current.right = leftLeaf;
                         single = false;
+                    }
+                    else if (!isFromRight && (!(current.right is LeafNode) || (i == (width - 1) && ((LeafNode)current.right).key != key)))
+                    {
+                        current.left = rightLeaf;
+                        single = false;
+                    }
                     else
+                    {
                         table[i].Remove(id);
+                    }
                 }
                 // fix jump pointers
                 else
@@ -277,7 +302,6 @@ namespace UAM.Kora
                     else if (current.right == endNode)
                         current.left = leftLeaf;
                 }
-                old = current;
             }
             count--;
             return true;
