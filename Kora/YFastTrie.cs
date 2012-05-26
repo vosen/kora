@@ -210,7 +210,7 @@ namespace UAM.Kora
             else
             {
                 primary.value = FromSortedList(array, 0, array.Length - 1);
-                primary.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, primary.key);
+                primary.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
                 return false;
             }
         }
