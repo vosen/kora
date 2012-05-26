@@ -13,6 +13,12 @@ namespace KoraTests
     [TestFixture]
     class YFastTrie
     {
+        private static void Verify(YTrie trie)
+        {
+            foreach(var pair in trie.cluster)
+                Assert.DoesNotThrow(() =>pair.Value.VerifyInvariants());
+        }
+
         [Test]
         public void RBTreeFromSortedList()
         {
@@ -189,6 +195,42 @@ namespace KoraTests
             Assert.AreEqual("64", trie[64]);
             string temp;
             Assert.Throws<KeyNotFoundException>(() => temp = trie[65]);
+        }
+
+        [Test]
+        public void RemoveWithMerge()
+        {
+            var trie = new YTrie();
+            Assert.IsFalse(trie.Remove(1748));
+            for (uint i = 0; i < 17; i++)
+            {
+                trie.Add(i, i.ToString());
+                Verify(trie);
+            }
+            Assert.IsTrue(trie.Remove(16));
+            Verify(trie);
+            for (uint i = 16; i < 65; i++)
+            {
+                trie.Add(i, i.ToString());
+                Verify(trie);
+            }
+            for (uint i = 2; i < 25; i++)
+            {
+                Assert.IsTrue(trie.Remove(i));
+                Verify(trie);
+            }
+        }
+
+        [Test]
+        public void RemoveWithMergeAndSplit()
+        {
+            var trie = new YTrie();
+            Assert.IsFalse(trie.Remove(1927575451));
+            for (uint i = 0; i < 95; i++)
+                trie.Add(i, i.ToString());
+            // we've got keys split into 2 buckets now -- one with keys {0..31} and another with keys {32..96}
+            for (uint i = 1; i < 20; i++)
+                trie.Remove(i);
         }
     }
 }

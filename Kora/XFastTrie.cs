@@ -387,14 +387,22 @@ namespace UAM.Kora
             throw new NotImplementedException();
         }
 
-        IEnumerator<KeyValuePair<uint, T>> IEnumerable<KeyValuePair<uint, T>>.GetEnumerator()
+        public IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
         {
-            throw new NotImplementedException();
+            LeafNode start = leafList, current = leafList;
+            if(current == null)
+                yield break;
+
+            while (current != leafList)
+            {
+                yield return new KeyValuePair<uint, T>(current.key, current.value);
+                current = (LeafNode)current.right;
+            }
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }

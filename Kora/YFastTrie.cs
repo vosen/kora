@@ -9,7 +9,7 @@ namespace UAM.Kora
     {
         const int upperLimit = 64;
         const int lowerLimit = 16;
-        XFastTrie<RBTree> cluster;
+        internal XFastTrie<RBTree> cluster;
 
         // removes new RBTree from the old tree
         internal static RBTree SplitNew(ref RBTree tree)
@@ -50,7 +50,13 @@ namespace UAM.Kora
         static void RBInsertChildren(RBTree.Node node, bool left, int depth, int totalDepth, RBTree.Node[] list, int start, int stop)
         {
             if (start > stop)
+            {
+                if (left)
+                    node.left = null;
+                else
+                    node.right = null;
                 return;
+            }
             int middle = start + ((stop - start) >> 1);
             RBTree.Node current = list[middle];
             current.Size = (uint)(stop - start) + 1;
@@ -162,10 +168,51 @@ namespace UAM.Kora
             }
         }
 
-
         public bool Remove(uint key)
         {
-            throw new NotImplementedException();
+            var separator = Separator(key);
+            if (separator == null || separator.value.Remove(key) == null)
+                return false;
+            // at this point key is removed from bst
+            if (separator.left == separator || separator.value.Count >= lowerLimit)
+                return true;
+            // we need to rebuild
+             XFastTrie<RBTree>.LeafNode adjacent;
+            var left = (XFastTrie<RBTree>.LeafNode)separator.left;
+            var right = (XFastTrie<RBTree>.LeafNode)separator.right;
+            // pick best merge candidate
+            if (left.key > separator.key)
+                adjacent = right;
+            else if (right.key < separator.key)
+                adjacent = left;
+            else 
+                adjacent = left.value.Count <= right.value.Count ? left : right;
+            if (!MergeSplit(separator, adjacent))
+                cluster.Remove(adjacent.key);
+            return true;
+        }
+
+        private static bool MergeSplit(XFastTrie<RBTree>.LeafNode primary, XFastTrie<RBTree>.LeafNode secondary)
+        {
+            XFastTrie<RBTree>.LeafNode lower = primary.key < secondary.key ? primary : secondary;
+            XFastTrie<RBTree>.LeafNode higher = lower == primary ? secondary : primary;
+            RBTree.Node[] array = new RBTree.Node[primary.value.Count + secondary.value.Count];
+            lower.value.CopySorted(array, 0);
+            higher.value.CopySorted(array, lower.value.Count);
+            if (array.Length > upperLimit)
+            {
+                lower.value = FromSortedList(array, 0, array.Length >> 1);
+                lower.key = ((RBUIntNode)array[array.Length >> 1]).key;
+                higher.value = FromSortedList(array, (array.Length >> 1) + 1, array.Length - 1);
+                higher.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
+                return true;
+            }
+            else
+            {
+                primary.value = FromSortedList(array, 0, array.Length - 1);
+                primary.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, primary.key);
+                return false;
+            }
         }
 
         KeyValuePair<uint, T>? ISortedDictionary<uint, T>.First()

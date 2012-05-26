@@ -27,10 +27,15 @@ namespace UAM.Kora
             return node;
         }
 
+        public static void CopySorted(this RBTree tree, RBTree.Node[] array, int offset)
+        {
+            InOrderAdd(tree.root, array, offset);
+        }
+
         public static RBTree.Node[] ToSortedArray(this RBTree tree)
         {
             RBTree.Node[] array = new RBTree.Node[tree.Count];
-            InOrderAdd(tree.root, array, 0);
+            CopySorted(tree, array, 0);
             return array;
         }
 
