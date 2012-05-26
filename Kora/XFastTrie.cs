@@ -168,6 +168,7 @@ namespace UAM.Kora
                 }
             }
             count++;
+            version++;
             // merrily continue
             LeafNode endNode = new LeafNode() { key = key, value = value };
             InsertLeafAfter(predecessor, endNode);
@@ -299,6 +300,7 @@ namespace UAM.Kora
                 }
             }
             count--;
+            version++;
             return true;
         }
 
