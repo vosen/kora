@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -41,6 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitHacks.cs" />
+    <Compile Include="RBTree.cs" />
+    <Compile Include="YFastTrie.RBUIntNode.cs" />
+    <Compile Include="YFastTrie.RBUIntNodeHelper.cs" />
+    <Compile Include="YFastTrie.cs" />
     <Compile Include="XFastTrie.LeafNode.cs" />
     <Compile Include="ICollectionHelpers.cs" />
     <Compile Include="HashTable.InnerHashTable.cs" />
