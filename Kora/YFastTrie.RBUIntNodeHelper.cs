@@ -7,11 +7,11 @@ namespace UAM.Kora
 {
     partial class YFastTrie<T>
     {
-        class RBUIntNodeHelper : RBTree.INodeHelper<uint>
+        internal class RBUIntNodeHelper : RBTree.INodeHelper<uint>
         {
             public int Compare(uint key, RBTree.Node node)
             {
-                return key.CompareTo(((RBUIntNode)node).value);
+                return key.CompareTo(((RBUIntNode)node).key);
             }
 
             public RBTree.Node CreateNode(uint key)

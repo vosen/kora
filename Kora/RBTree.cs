@@ -124,7 +124,6 @@ namespace UAM.Kora
 		[ThreadStatic]
 		static List<Node> cached_path;
 #endif
-
 		static List<Node> alloc_path ()
 		{
 			if (cached_path == null)

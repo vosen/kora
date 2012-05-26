@@ -7,21 +7,35 @@ namespace UAM.Kora
 {
     partial class YFastTrie<T>
     {
-        class RBUIntNode : RBTree.Node
+        internal class RBUIntNode : RBTree.Node
         {
-            internal uint value;
+            internal uint key;
+            internal T value;
 
-            public RBUIntNode(uint val)
+            internal RBUIntNode(KeyValuePair<uint, T> pair)
+                : this(pair.Key, pair.Value)
+            {}
+
+            internal RBUIntNode(uint key)
             {
-                value = val;
+                this.key = key;
+            }
+
+            internal RBUIntNode(uint key, T value)
+            {
+                this.key = key;
+                this.value = value;
             }
 
             public override void SwapValue(RBTree.Node other)
             {
                 RBUIntNode node = (RBUIntNode)other;
-                uint temp = value;
+                uint tempKey = key;
+                this.key = node.key;
+                node.key = tempKey;
+                T tempValue = this.value;
                 this.value = node.value;
-                node.value = temp;
+                node.value = tempValue;
             }
         }
     }

@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="BitHacks.cs" />
     <Compile Include="RBTree.cs" />
+    <Compile Include="RBTreeExtensions.cs" />
+    <Compile Include="YFastTrie.Node.cs" />
     <Compile Include="YFastTrie.RBUIntNode.cs" />
     <Compile Include="YFastTrie.RBUIntNodeHelper.cs" />
     <Compile Include="YFastTrie.cs" />

@@ -107,13 +107,13 @@ namespace UAM.Kora
             return null;
         }
 
-        private LeafNode LowerNode(uint key)
+        internal LeafNode LowerNode(uint key)
         {
             Node ancestor = Bottom(key);
             return LowerNodeFromBottom(ancestor, key);
         }
 
-        private LeafNode HigherNode(uint key)
+        internal LeafNode HigherNode(uint key)
         {
             Node ancestor = Bottom(key);
             if (ancestor == null)
