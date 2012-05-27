@@ -37,6 +37,17 @@ namespace UAM.Kora
                 this.value = node.value;
                 node.value = tempValue;
             }
+
+            public override bool Equals(object obj)
+            {
+                RBUIntNode node = obj as RBUIntNode;
+                return (node != null) && (node.key == key) && (Object.Equals(node.value, value));
+            }
+
+            public override int GetHashCode()
+            {
+                return key.GetHashCode() ^ (value == null ? int.MaxValue : value.GetHashCode());
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ namespace UAM.Kora
         int count;
         int version;
         HashTable<Node>[] table;
-        LeafNode leafList;
+        internal LeafNode leafList;
 
         public XFastTrie()
         {

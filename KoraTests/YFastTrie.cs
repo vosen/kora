@@ -22,14 +22,56 @@ namespace KoraTests
         [Test]
         public void RBTreeFromSortedList()
         {
-            RBTree empty = YTrie.FromSortedList(new Node[0], 0, 0);
+            RBTree empty = YTrie.RBUtils.FromSortedList(new Node[0], 0, 0);
             Assert.DoesNotThrow(() => empty.VerifyInvariants());
-            RBTree singleton = YTrie.FromSortedList(new Node[] { new Node(0, "0") }, 0, 0);
+            RBTree singleton = YTrie.RBUtils.FromSortedList(new Node[] { new Node(0, "0") }, 0, 0);
             Assert.DoesNotThrow(() => singleton.VerifyInvariants());
-            RBTree fullTree = YTrie.FromSortedList(new Node[] { new Node(0, "0"), new Node(1, "1"), new Node(2, "2"), new Node(3, "3"), new Node(4, "4"), new Node(5, "5"), new Node(6, "6") }, 0, 6);
+            RBTree fullTree = YTrie.RBUtils.FromSortedList(new Node[] { new Node(0, "0"), new Node(1, "1"), new Node(2, "2"), new Node(3, "3"), new Node(4, "4"), new Node(5, "5"), new Node(6, "6") }, 0, 6);
             Assert.DoesNotThrow(() => fullTree.VerifyInvariants());
-            RBTree nonFull = YTrie.FromSortedList(new Node[] { new Node(0, "0"), new Node(1, "1"), new Node(2, "2"), new Node(3, "3"), new Node(4, "4"), new Node(5, "5"), new Node(6, "6"), new Node(7, "7") }, 0, 7);
+            RBTree nonFull = YTrie.RBUtils.FromSortedList(new Node[] { new Node(0, "0"), new Node(1, "1"), new Node(2, "2"), new Node(3, "3"), new Node(4, "4"), new Node(5, "5"), new Node(6, "6"), new Node(7, "7") }, 0, 7);
             Assert.DoesNotThrow(() => nonFull.VerifyInvariants());
+        }
+
+        [Test]
+        public void RBTreeHigherNode()
+        {
+            RBTree tree = YTrie.RBUtils.FromSortedList(new Node[] { new Node(1, "1"), new Node(3, "3"), new Node(5, "5"), new Node(7, "7"), new Node(9, "9"), new Node(11, "11"), new Node(13, "13") }, 0, 6);
+            Assert.AreEqual(new YTrie.RBUIntNode(1, "1"), YTrie.RBUtils.HigherNode(tree, 0));
+            Assert.AreEqual(new YTrie.RBUIntNode(3, "3"), YTrie.RBUtils.HigherNode(tree, 1));
+            Assert.AreEqual(new YTrie.RBUIntNode(3, "3"), YTrie.RBUtils.HigherNode(tree, 2));
+            Assert.AreEqual(new YTrie.RBUIntNode(5, "5"), YTrie.RBUtils.HigherNode(tree, 3));
+            Assert.AreEqual(new YTrie.RBUIntNode(5, "5"), YTrie.RBUtils.HigherNode(tree, 4));
+            Assert.AreEqual(new YTrie.RBUIntNode(7, "7"), YTrie.RBUtils.HigherNode(tree, 5));
+            Assert.AreEqual(new YTrie.RBUIntNode(7, "7"), YTrie.RBUtils.HigherNode(tree, 6));
+            Assert.AreEqual(new YTrie.RBUIntNode(9, "9"), YTrie.RBUtils.HigherNode(tree, 7));
+            Assert.AreEqual(new YTrie.RBUIntNode(9, "9"), YTrie.RBUtils.HigherNode(tree, 8));
+            Assert.AreEqual(new YTrie.RBUIntNode(11, "11"), YTrie.RBUtils.HigherNode(tree, 9));
+            Assert.AreEqual(new YTrie.RBUIntNode(11, "11"), YTrie.RBUtils.HigherNode(tree, 10));
+            Assert.AreEqual(new YTrie.RBUIntNode(13, "13"), YTrie.RBUtils.HigherNode(tree, 11));
+            Assert.AreEqual(new YTrie.RBUIntNode(13, "13"), YTrie.RBUtils.HigherNode(tree, 12));
+            Assert.AreEqual(null, YTrie.RBUtils.HigherNode(tree, 13));
+            Assert.AreEqual(null, YTrie.RBUtils.HigherNode(tree, 14));
+        }
+
+        [Test]
+        public void RBTreeLowerNode()
+        {
+            RBTree tree = YTrie.RBUtils.FromSortedList(new Node[] { new Node(1, "1"), new Node(3, "3"), new Node(5, "5"), new Node(7, "7"), new Node(9, "9"), new Node(11, "11"), new Node(13, "13") }, 0, 6);
+            Assert.AreEqual(null, YTrie.RBUtils.LowerNode(tree, 0));
+            Assert.AreEqual(null, YTrie.RBUtils.LowerNode(tree, 1));
+            Assert.AreEqual(new YTrie.RBUIntNode(1, "1"), YTrie.RBUtils.LowerNode(tree, 2));
+            Assert.AreEqual(new YTrie.RBUIntNode(1, "1"), YTrie.RBUtils.LowerNode(tree, 3));
+            Assert.AreEqual(new YTrie.RBUIntNode(3, "3"), YTrie.RBUtils.LowerNode(tree, 4));
+            Assert.AreEqual(new YTrie.RBUIntNode(3, "3"), YTrie.RBUtils.LowerNode(tree, 5));
+            Assert.AreEqual(new YTrie.RBUIntNode(5, "5"), YTrie.RBUtils.LowerNode(tree, 6));
+            Assert.AreEqual(new YTrie.RBUIntNode(5, "5"), YTrie.RBUtils.LowerNode(tree, 7));
+            Assert.AreEqual(new YTrie.RBUIntNode(7, "7"), YTrie.RBUtils.LowerNode(tree, 8));
+            Assert.AreEqual(new YTrie.RBUIntNode(7, "7"), YTrie.RBUtils.LowerNode(tree, 9));
+            Assert.AreEqual(new YTrie.RBUIntNode(9, "9"), YTrie.RBUtils.LowerNode(tree, 10));
+            Assert.AreEqual(new YTrie.RBUIntNode(9, "9"), YTrie.RBUtils.LowerNode(tree, 11));
+            Assert.AreEqual(new YTrie.RBUIntNode(11, "11"), YTrie.RBUtils.LowerNode(tree, 12));
+            Assert.AreEqual(new YTrie.RBUIntNode(11, "11"), YTrie.RBUtils.LowerNode(tree, 13));
+            Assert.AreEqual(new YTrie.RBUIntNode(13, "13"), YTrie.RBUtils.LowerNode(tree, 14));
         }
 
         [Test]
@@ -57,6 +99,14 @@ namespace KoraTests
             Assert.AreEqual("845-2", trie[845]);
             trie.Add(815, "815");
             Assert.AreEqual("815", trie[815]);
+        }
+
+        [Test]
+        public void AddMaxValue()
+        {
+            YTrie trie = new YTrie();
+            trie.Add(uint.MaxValue, uint.MaxValue.ToString());
+            Assert.AreEqual(uint.MaxValue.ToString(), trie[uint.MaxValue]);
         }
 
         [Test]
@@ -231,6 +281,60 @@ namespace KoraTests
             // we've got keys split into 2 buckets now -- one with keys {0..31} and another with keys {32..96}
             for (uint i = 1; i < 20; i++)
                 trie.Remove(i);
+        }
+
+        [Test]
+        public void FirstLast()
+        {
+            var trie = new YTrie();
+            Assert.AreEqual(null, trie.First());
+            Assert.AreEqual(null, trie.Last());
+            trie.Add(383374792, "383374792");
+            Assert.AreEqual(new KVP(383374792, "383374792"), trie.First());
+            Assert.AreEqual(new KVP(383374792, "383374792"), trie.Last());
+            Assert.IsTrue(trie.Remove(383374792));
+            Assert.AreEqual(null, trie.First());
+            Assert.AreEqual(null, trie.Last());
+            trie.Add(838201935, "838201935");
+            trie.Add(1531916866, "1531916866");
+            trie.Add(233576276, "233576276");
+            trie.Add(1715187717, "1715187717");
+            trie.Add(310188794, "310188794");
+            trie.Add(1033137354, "1033137354");
+            trie.Add(1886499922, "1886499922");
+            Assert.AreEqual("1886499922", trie[1886499922]);
+            Assert.AreEqual(new KVP(233576276, "233576276"), trie.First());
+            Assert.AreEqual(new KVP(1886499922, "1886499922"), trie.Last());
+            trie.Add(0, "0");
+            trie.Add(uint.MaxValue, uint.MaxValue.ToString());
+            Assert.AreEqual(new KVP(0, "0"), trie.First());
+            Assert.AreEqual(new KVP(uint.MaxValue, uint.MaxValue.ToString()), trie.Last());
+        }
+
+        [Test]
+        public void Lower()
+        {
+            var trie = new YTrie();
+            Assert.AreEqual(null, trie.Lower(0));
+            Assert.AreEqual(null, trie.Lower(uint.MaxValue));
+            for (uint i = 0; i < 65; i++ )
+                trie.Add(i, i.ToString());
+            Assert.AreEqual(null, trie.Lower(0));
+            for(uint i=1; i< 66; i++)
+                Assert.AreEqual(new KVP(i-1, (i-1).ToString()), trie.Lower(i));
+        }
+
+        [Test]
+        public void Higher()
+        {
+            var trie = new YTrie();
+            Assert.AreEqual(null, trie.Higher(0));
+            Assert.AreEqual(null, trie.Higher(uint.MaxValue));
+            for (uint i = 1; i < 66; i++)
+                trie.Add(i, i.ToString());
+            Assert.AreEqual(null, trie.Higher(uint.MaxValue));
+            for (uint i = 0; i < 65; i++)
+                Assert.AreEqual(new KVP(i + 1, (i + 1).ToString()), trie.Higher(i));
         }
     }
 }

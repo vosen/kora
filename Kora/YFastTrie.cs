@@ -18,8 +18,8 @@ namespace UAM.Kora
             if (tree.root.left != null)
                 return LazySplitNew(tree);
             RBTree.Node[] nodes = tree.ToSortedArray();
-            tree = FromSortedList(nodes, (nodes.Length >> 1), nodes.Length - 1);
-            return FromSortedList(nodes, 0, (nodes.Length >> 1) - 1);
+            tree = RBUtils.FromSortedList(nodes, (nodes.Length >> 1), nodes.Length - 1);
+            return RBUtils.FromSortedList(nodes, 0, (nodes.Length >> 1) - 1);
         }
 
         internal static RBTree LazySplitNew(RBTree tree)
@@ -32,43 +32,6 @@ namespace UAM.Kora
             return newTree;
         }
 
-        internal static RBTree FromSortedList(RBTree.Node[] list, int start, int stop)
-        {
-            RBTree tree = new RBTree(new RBUIntNodeHelper());
-            int length = stop - start + 1;
-            if(start == stop)
-                return tree;
-            int maxDepth = BitHacks.Power2MSB(BitHacks.RoundToPower((uint)(length + 1))) - 1;
-            tree.root = list[length >> 1];
-            tree.root.IsBlack = true;
-            tree.root.Size = (uint)length;
-            RBInsertChildren(tree.root, true, 1, maxDepth, list, start, start + (length >> 1) - 1);
-            RBInsertChildren(tree.root, false, 1, maxDepth, list, start + (length >> 1) + 1, stop);
-            return tree;
-        }
-
-        static void RBInsertChildren(RBTree.Node node, bool left, int depth, int totalDepth, RBTree.Node[] list, int start, int stop)
-        {
-            if (start > stop)
-            {
-                if (left)
-                    node.left = null;
-                else
-                    node.right = null;
-                return;
-            }
-            int middle = start + ((stop - start) >> 1);
-            RBTree.Node current = list[middle];
-            current.Size = (uint)(stop - start) + 1;
-            current.IsBlack = (((totalDepth - depth) & 1) == 1);
-            if(left)
-                node.left = current;
-            else
-                node.right = current;
-            RBInsertChildren(current, true, depth + 1, totalDepth, list, start, middle - 1);
-            RBInsertChildren(current, false, depth + 1, totalDepth, list, middle + 1, stop);
-        }
-
         public YFastTrie()
         {
             cluster = new XFastTrie<RBTree>();
@@ -76,6 +39,11 @@ namespace UAM.Kora
 
         private XFastTrie<RBTree>.LeafNode Separator(uint key)
         {
+            if (cluster.leafList == null)
+                return null;
+            // special check for maxval
+            if (((XFastTrie<RBTree>.LeafNode)cluster.leafList.left).key == key)
+                return (XFastTrie<RBTree>.LeafNode)cluster.leafList.left;
             var succ = cluster.HigherNode(key);
             if (succ == null)
                 return null;
@@ -112,34 +80,23 @@ namespace UAM.Kora
 
         public bool TryGetValue(uint key, out T value)
         {
-            var xSucc = cluster.HigherNode(key);
-            if(xSucc == null)
+            var sep = Separator(key);
+            if (sep == null)
             {
                 value = default(T);
                 return false;
             }
-            XFastTrie<RBTree>.LeafNode left = (XFastTrie<RBTree>.LeafNode)xSucc.left;
-            RBUIntNode candidate;
-            if (left.key == key && left != xSucc)
+            RBUIntNode candidate = (RBUIntNode)sep.value.Lookup(key);
+            if (candidate == null)
             {
-                candidate = (RBUIntNode)left.value.LastNode();
+                value = default(T);
+                return false;
             }
-            else
-            {
-                candidate = (RBUIntNode)xSucc.value.Lookup(key);
-                if (candidate == null)
-                {
-                    value = default(T);
-                    return false;
-                }
-            }
-            if(candidate.key == key)
+            else 
             {
                 value = candidate.value;
                 return true;
             }
-            value = default(T);
-            return false;
         }
 
         public T this[uint key]
@@ -201,38 +158,73 @@ namespace UAM.Kora
             higher.value.CopySorted(array, lower.value.Count);
             if (array.Length > upperLimit)
             {
-                lower.value = FromSortedList(array, 0, array.Length >> 1);
+                lower.value = RBUtils.FromSortedList(array, 0, array.Length >> 1);
                 lower.key = ((RBUIntNode)array[array.Length >> 1]).key;
-                higher.value = FromSortedList(array, (array.Length >> 1) + 1, array.Length - 1);
+                higher.value = RBUtils.FromSortedList(array, (array.Length >> 1) + 1, array.Length - 1);
                 higher.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
                 return true;
             }
             else
             {
-                primary.value = FromSortedList(array, 0, array.Length - 1);
+                primary.value = RBUtils.FromSortedList(array, 0, array.Length - 1);
                 primary.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
                 return false;
             }
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.First()
+        public KeyValuePair<uint, T>? First()
         {
-            throw new NotImplementedException();
+            var firstXNode = cluster.First();
+            if (firstXNode == null)
+                return null;
+            var firstRBNode = (RBUIntNode)firstXNode.Value.Value.FirstNode();
+            if (firstRBNode == null)
+                return null;
+            return new KeyValuePair<uint, T>(firstRBNode.key, firstRBNode.value);
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.Last()
+        public KeyValuePair<uint, T>? Last()
         {
-            throw new NotImplementedException();
+            var lastXNode = cluster.Last();
+            if (lastXNode == null)
+                return null;
+            var lastRBNode = (RBUIntNode)lastXNode.Value.Value.LastNode();
+            if (lastRBNode == null)
+                return null;
+            return new KeyValuePair<uint, T>(lastRBNode.key, lastRBNode.value);
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.Lower(uint key)
+        public KeyValuePair<uint, T>? Lower(uint key)
         {
-            throw new NotImplementedException();
+            XFastTrie<RBTree>.LeafNode separator = Separator(key);
+            if (separator == null)
+                return null;
+            RBUIntNode predNode = RBUtils.LowerNode(separator.value, key);
+            if (predNode == null)
+            {
+                if (separator == cluster.leafList)
+                    return null;
+                RBUIntNode highestLeft = (RBUIntNode)((XFastTrie<RBTree>.LeafNode)separator.left).value.LastNode();
+                return new KeyValuePair<uint, T>(highestLeft.key, highestLeft.value);
+            }
+            return new KeyValuePair<uint, T>(predNode.key, predNode.value);
         }
 
-        KeyValuePair<uint, T>? ISortedDictionary<uint, T>.Higher(uint key)
+        public KeyValuePair<uint, T>? Higher(uint key)
         {
-            throw new NotImplementedException();
+            XFastTrie<RBTree>.LeafNode higherNode = cluster.HigherNode(key);
+            if (higherNode == null)
+                return null;
+            XFastTrie<RBTree>.LeafNode left = (XFastTrie<RBTree>.LeafNode)higherNode.left;
+            if (((XFastTrie<RBTree>.LeafNode)higherNode.left).key == key)
+            {
+                var succNode = (RBUIntNode)higherNode.value.FirstNode();
+                return new KeyValuePair<uint,T>(succNode.key, succNode.value);
+            }
+            RBUIntNode rbHigher = RBUtils.HigherNode(higherNode.value, key);
+            if (rbHigher == null)
+                return null;
+            return new KeyValuePair<uint, T>(rbHigher.key, rbHigher.value);
         }
 
         bool IDictionary<uint, T>.ContainsKey(uint key)

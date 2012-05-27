@@ -9,7 +9,11 @@ namespace UAM.Kora
     {
         public static RBTree.Node FirstNode(this RBTree tree)
         {
-            RBTree.Node node = tree.root;
+            return FirstNode(tree.root);
+        }
+
+        public static RBTree.Node FirstNode(this RBTree.Node node)
+        {
             if (node == null)
                 return null;
             while (node.left != null)
@@ -17,14 +21,18 @@ namespace UAM.Kora
             return node;
         }
 
-        public static RBTree.Node LastNode(this RBTree tree)
+        public static RBTree.Node LastNode(this RBTree.Node node)
         {
-            RBTree.Node node = tree.root;
             if (node == null)
                 return null;
-            while (node.left != null)
+            while (node.right != null)
                 node = node.right;
             return node;
+        }
+
+        public static RBTree.Node LastNode(this RBTree tree)
+        {
+            return LastNode(tree.root);
         }
 
         public static void CopySorted(this RBTree tree, RBTree.Node[] array, int offset)
