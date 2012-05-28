@@ -223,7 +223,7 @@ namespace UAM.Kora
 
         private void RemoveLeaf(LeafNode leaf)
         {
-            Node right = leaf.right;
+            LeafNode right = (LeafNode)leaf.right;
             if (right == leaf)
             {
                 leafList = null;
@@ -232,6 +232,8 @@ namespace UAM.Kora
             {
                 leaf.left.right = right;
                 right.left = leaf.left;
+                if (leaf == leafList)
+                    leafList = right;
             }
         }
 
@@ -302,7 +304,7 @@ namespace UAM.Kora
                 if ((key & 1) == 1)
                 {
                     LeafNode right = (LeafNode)node.right;
-                    if (right != null)
+                    if (right != null && right.key == key)
                     {
                         value = right.value;
                         return true;
@@ -311,7 +313,7 @@ namespace UAM.Kora
                 else
                 {
                     LeafNode left = (LeafNode)node.left;
-                    if (left != null)
+                    if (left != null && left.key == key)
                     {
                         value = left.value;
                         return true;
