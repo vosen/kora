@@ -296,27 +296,28 @@ namespace UAM.Kora
 
         public override bool TryGetValue(uint key, out T value)
         {
-            Node ancestor = Bottom(key);
-            if (ancestor == null)
+            Node node;
+            if (table[width - 1].TryGetValue(key >> 1, out node))
             {
-                value = default(T);
-                return false;
+                if ((key & 1) == 1)
+                {
+                    LeafNode right = (LeafNode)node.right;
+                    if (right != null)
+                    {
+                        value = right.value;
+                        return true;
+                    }
+                }
+                else
+                {
+                    LeafNode left = (LeafNode)node.left;
+                    if (left != null)
+                    {
+                        value = left.value;
+                        return true;
+                    }
+                }
             }
-
-            LeafNode leaf = ancestor.left as LeafNode;
-            if (leaf != null && leaf.key == key)
-            {
-                value = leaf.value;
-                return true;
-            }
-
-            leaf = ancestor.right as LeafNode;
-            if (leaf != null && leaf.key == key)
-            {
-                value = leaf.value;
-                return true;
-            }
-
             value = default(T);
             return false;
         }
