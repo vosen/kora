@@ -58,7 +58,7 @@ namespace UAM.Kora
                     }
                 }
                 // we finished walk on a node with key equal to ours
-                if (current != null && current.right != null)
+                if (current != null && current.left != null)
                 {
                     return (RBUIntNode)current.left.LastNode();
                 }
@@ -72,7 +72,7 @@ namespace UAM.Kora
                 if (start == stop)
                     return tree;
                 int maxDepth = BitHacks.Power2MSB(BitHacks.RoundToPower((uint)(length + 1))) - 1;
-                tree.root = list[length >> 1];
+                tree.root = list[start + (length >> 1)];
                 tree.root.IsBlack = true;
                 tree.root.Size = (uint)length;
                 RBInsertChildren(tree.root, true, 1, maxDepth, list, start, start + (length >> 1) - 1);

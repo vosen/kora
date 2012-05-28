@@ -15,8 +15,10 @@ namespace KoraTests
     {
         private static void Verify(YTrie trie)
         {
-            foreach(var pair in trie.cluster)
-                Assert.DoesNotThrow(() =>pair.Value.VerifyInvariants());
+            foreach (var pair in trie.cluster)
+            {
+                pair.Value.VerifyInvariants();
+            }
         }
 
         [Test]

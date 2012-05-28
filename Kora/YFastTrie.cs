@@ -14,9 +14,10 @@ namespace UAM.Kora
         // removes new RBTree from the old tree
         internal static RBTree SplitNew(ref RBTree tree)
         {
-            // try doing lazy split
+            /* lazy split disabled - breaks the rb tree invariants
             if (tree.root.left != null)
                 return LazySplitNew(tree);
+             */
             RBTree.Node[] nodes = tree.ToSortedArray();
             tree = RBUtils.FromSortedList(nodes, (nodes.Length >> 1), nodes.Length - 1);
             return RBUtils.FromSortedList(nodes, 0, (nodes.Length >> 1) - 1);
