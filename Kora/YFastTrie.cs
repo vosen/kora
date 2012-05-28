@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    public partial class YFastTrie<T> : ISortedDictionary<uint, T>
+    public partial class YFastTrie<T> : SortedDictionaryBase<T>
     {
         const int upperLimit = 64;
         const int lowerLimit = 16;
@@ -54,7 +54,7 @@ namespace UAM.Kora
             return succ;
         }
 
-        public void Add(uint key, T value)
+        public override void Add(uint key, T value)
         {
             var separator = Separator(key);
             if (separator == null)
@@ -79,7 +79,7 @@ namespace UAM.Kora
             cluster.Add(((RBUIntNode)newTree.LastNode()).key, newTree);
         }
 
-        public bool TryGetValue(uint key, out T value)
+        public override bool TryGetValue(uint key, out T value)
         {
             var sep = Separator(key);
             if (sep == null)
@@ -100,7 +100,7 @@ namespace UAM.Kora
             }
         }
 
-        public T this[uint key]
+        public override T this[uint key]
         {
             get
             {
@@ -126,7 +126,7 @@ namespace UAM.Kora
             }
         }
 
-        public bool Remove(uint key)
+        public override bool Remove(uint key)
         {
             var separator = Separator(key);
             if (separator == null || separator.value.Remove(key) == null)
@@ -173,7 +173,7 @@ namespace UAM.Kora
             }
         }
 
-        public KeyValuePair<uint, T>? First()
+        public override KeyValuePair<uint, T>? First()
         {
             var firstXNode = cluster.First();
             if (firstXNode == null)
@@ -184,7 +184,7 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(firstRBNode.key, firstRBNode.value);
         }
 
-        public KeyValuePair<uint, T>? Last()
+        public override KeyValuePair<uint, T>? Last()
         {
             var lastXNode = cluster.Last();
             if (lastXNode == null)
@@ -195,7 +195,7 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(lastRBNode.key, lastRBNode.value);
         }
 
-        public KeyValuePair<uint, T>? Lower(uint key)
+        public override KeyValuePair<uint, T>? Lower(uint key)
         {
             XFastTrie<RBTree>.LeafNode separator = Separator(key);
             if (separator == null)
@@ -211,7 +211,7 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(predNode.key, predNode.value);
         }
 
-        public KeyValuePair<uint, T>? Higher(uint key)
+        public override KeyValuePair<uint, T>? Higher(uint key)
         {
             XFastTrie<RBTree>.LeafNode higherNode = cluster.HigherNode(key);
             if (higherNode == null)
@@ -228,62 +228,22 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(rbHigher.key, rbHigher.value);
         }
 
-        bool IDictionary<uint, T>.ContainsKey(uint key)
+        public override bool ContainsKey(uint key)
         {
             throw new NotImplementedException();
         }
 
-        ICollection<uint> IDictionary<uint, T>.Keys
+        public override void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int Count
         {
             get { throw new NotImplementedException(); }
         }
 
-        ICollection<T> IDictionary<uint, T>.Values
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.Add(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Contains(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.CopyTo(KeyValuePair<uint, T>[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        int ICollection<KeyValuePair<uint, T>>.Count
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Remove(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator<KeyValuePair<uint, T>> IEnumerable<KeyValuePair<uint, T>>.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public override IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
         {
             throw new NotImplementedException();
         }

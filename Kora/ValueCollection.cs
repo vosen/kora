@@ -5,28 +5,20 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    public partial class VEBTree<T>
+    public class ValueCollection<T> : ICollection<T>
     {
-        public class KeyCollection : ICollection<uint>
-        {
+            private IDictionary<uint, T> tree;
 
-            private VEBTree<T> tree;
-
-            internal KeyCollection(VEBTree<T> vebTree)
+            internal ValueCollection(IDictionary<uint, T> dict)
             {
-                tree = vebTree;
+                tree = dict;
             }
 
-            public IEnumerator<uint> GetEnumerator()
+            public IEnumerator<T> GetEnumerator()
             {
                 var iter = tree.GetEnumerator();
                 while (iter.MoveNext())
-                    yield return iter.Current.Key;
-            }
-
-            public int Count
-            {
-                get { return tree.Count; }
+                    yield return iter.Current.Value;
             }
 
             public bool IsReadOnly
@@ -36,33 +28,38 @@ namespace UAM.Kora
 
             #region implicits
 
-            void ICollection<uint>.Add(uint item)
+            int ICollection<T>.Count
+            {
+                get { return tree.Count; }
+            }
+
+            void ICollection<T>.Add(T item)
             {
                 throw new NotSupportedException();
             }
 
-            void ICollection<uint>.Clear()
+            void ICollection<T>.Clear()
             {
                 throw new NotSupportedException();
             }
 
-            bool ICollection<uint>.Contains(uint item)
+            bool ICollection<T>.Contains(T item)
             {
-                return tree.ContainsKey(item);
+                return tree.Any(kvp => kvp.Value.Equals(item));
             }
 
-            void ICollection<uint>.CopyTo(uint[] array, int arrayIndex)
+            void ICollection<T>.CopyTo(T[] array, int arrayIndex)
             {
                 ICollectionHelpers.ThrowIfInsufficientArray(this, array, arrayIndex);
                 var iter = tree.GetEnumerator();
                 for (int i = 0; i < tree.Count; i++)
                 {
                     iter.MoveNext();
-                    array[i] = iter.Current.Key;
+                    array[i] = iter.Current.Value;
                 }
             }
 
-            bool ICollection<uint>.Remove(uint item)
+            bool ICollection<T>.Remove(T item)
             {
                 throw new NotSupportedException();
             }
@@ -73,6 +70,6 @@ namespace UAM.Kora
             }
 
             #endregion
-        }
+        
     }
 }

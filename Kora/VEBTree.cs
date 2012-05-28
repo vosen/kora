@@ -6,7 +6,7 @@ using System.Text;
 namespace UAM.Kora
 {
     // TODO: add version increment to all mutating operations and check to enumerator
-    public partial class VEBTree<T> : ISortedDictionary<uint, T>
+    public partial class VEBTree<T> : SortedDictionaryBase<T>
     {
         private VEBTree<T>[] cluster;
         private VEBTree<uint> summary;
@@ -110,7 +110,7 @@ namespace UAM.Kora
             }
         }
 
-        public void Add(uint key, T value)
+        public override void Add(uint key, T value)
         {
             AddChecked(key, value, false);
         }
@@ -123,7 +123,7 @@ namespace UAM.Kora
             maxValue = value;
         }
 
-        public bool ContainsKey(uint key)
+        public override bool ContainsKey(uint key)
         {
             if (key == minKey || key == maxKey)
                 return true;
@@ -133,7 +133,7 @@ namespace UAM.Kora
                 return cluster[HighBits(key)].ContainsKey(LowBits(key));
         }
 
-        public bool Remove(uint key)
+        public override bool Remove(uint key)
         {
             if (RemoveCore(key))
             {
@@ -213,7 +213,7 @@ namespace UAM.Kora
             return false;
         }
 
-        public bool TryGetValue(uint key, out T value)
+        public override bool TryGetValue(uint key, out T value)
         {
             if (key == minKey)
             {
@@ -236,17 +236,7 @@ namespace UAM.Kora
             }
         }
 
-        public ICollection<uint> Keys
-        {
-            get { return new VEBTree<T>.KeyCollection(this); }
-        }
-
-        public ICollection<T> Values
-        {
-            get { return new VEBTree<T>.ValueCollection(this); }
-        }
-
-        public T this[uint key]
+        public override T this[uint key]
         {
             get
             {
@@ -262,7 +252,7 @@ namespace UAM.Kora
             }
         }
 
-        public void Clear()
+        public override void Clear()
         {
             count = 0;
             version++;
@@ -278,17 +268,12 @@ namespace UAM.Kora
             }
         }
 
-        public int Count
+        public override int Count
         {
             get { return count; }
         }
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
-
-        public IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
         {
             return GetEnumerator(0);
         }
@@ -322,21 +307,21 @@ namespace UAM.Kora
         #region ISorted
 
 
-        public KeyValuePair<uint, T>? First()
+        public override KeyValuePair<uint, T>? First()
         {
             if (minKey == null)
                 return null;
             return new KeyValuePair<uint, T>(minKey.Value, minValue);
         }
 
-        public KeyValuePair<uint, T>? Last()
+        public override KeyValuePair<uint, T>? Last()
         {
             if (maxKey == null)
                 return null;
             return new KeyValuePair<uint, T>(maxKey.Value, maxValue);
         }
 
-        public KeyValuePair<uint, T>? Lower(uint key)
+        public override KeyValuePair<uint, T>? Lower(uint key)
         {
             if (IsLeaf)
             {
@@ -378,7 +363,7 @@ namespace UAM.Kora
             }
         }
 
-        public KeyValuePair<uint, T>? Higher(uint key)
+        public override KeyValuePair<uint, T>? Higher(uint key)
         {
             if (IsLeaf)
             {
@@ -421,50 +406,6 @@ namespace UAM.Kora
         private bool IsLeaf
         {
             get{ return width == 1; }
-        }
-
-        #endregion
-
-        #region implicits
-
-        void ICollection<KeyValuePair<uint, T>>.Add(KeyValuePair<uint, T> item)
-        {
-            Add(item.Key, item.Value);
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Contains(KeyValuePair<uint, T> item)
-        {
-            T value;
-            if (TryGetValue(item.Key, out value))
-                return value.Equals(item.Value);
-            return false;
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.CopyTo(KeyValuePair<uint, T>[] array, int arrayIndex)
-        {
-            ICollectionHelpers.ThrowIfInsufficientArray(this, array, arrayIndex);
-            var iter = GetEnumerator();
-            for (int i = 0; i < count; i++)
-            {
-                iter.MoveNext();
-                array[i] = iter.Current;
-            }
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Remove(KeyValuePair<uint, T> item)
-        {
-            T value;
-            if (TryGetValue(item.Key, out value) && value.Equals(item.Value))
-            {
-                Remove(item.Key);
-                return true;
-            }
-            return false;
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         #endregion

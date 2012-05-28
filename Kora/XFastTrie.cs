@@ -5,9 +5,9 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    partial class XFastTrie<T> : ISortedDictionary<uint, T>
+    partial class XFastTrie<T> : SortedDictionaryBase<T>
     {
-        private static int width = 32;
+        private const int width = 32;
         int count;
         int version;
         HashTable<Node>[] table;
@@ -74,14 +74,14 @@ namespace UAM.Kora
             }
         }
 
-        public KeyValuePair<uint, T>? First()
+        public override KeyValuePair<uint, T>? First()
         {
             if (leafList == null)
                 return null;
             return new KeyValuePair<uint,T>(leafList.key, leafList.value);
         }
 
-        public KeyValuePair<uint, T>? Last()
+        public override KeyValuePair<uint, T>? Last()
         {
             if (leafList == null)
                 return null;
@@ -130,7 +130,7 @@ namespace UAM.Kora
             return null;
         }
 
-        public KeyValuePair<uint, T>? Lower(uint key)
+        public override KeyValuePair<uint, T>? Lower(uint key)
         {
             var lower = LowerNode(key);
             if (lower == null)
@@ -138,7 +138,7 @@ namespace UAM.Kora
             return new KeyValuePair<uint,T>(lower.key, lower.value);
         }
 
-        public KeyValuePair<uint, T>? Higher(uint key)
+        public override KeyValuePair<uint, T>? Higher(uint key)
         {
             var lower = HigherNode(key);
             if (lower == null)
@@ -216,19 +216,9 @@ namespace UAM.Kora
             }
         }
 
-        public void Add(uint key, T value)
+        public override void Add(uint key, T value)
         {
             AddChecked(key, value, false);
-        }
-
-        bool IDictionary<uint, T>.ContainsKey(uint key)
-        {
-            throw new NotImplementedException();
-        }
-
-        ICollection<uint> IDictionary<uint, T>.Keys
-        {
-            get { throw new NotImplementedException(); }
         }
 
         private void RemoveLeaf(LeafNode leaf)
@@ -245,7 +235,7 @@ namespace UAM.Kora
             }
         }
 
-        public bool Remove(uint key)
+        public override bool Remove(uint key)
         {
             var bottom = Bottom(key);
             if (bottom == null)
@@ -304,7 +294,7 @@ namespace UAM.Kora
             return true;
         }
 
-        public bool TryGetValue(uint key, out T value)
+        public override bool TryGetValue(uint key, out T value)
         {
             Node ancestor = Bottom(key);
             if (ancestor == null)
@@ -331,12 +321,7 @@ namespace UAM.Kora
             return false;
         }
 
-        ICollection<T> IDictionary<uint, T>.Values
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public T this[uint key]
+        public override T this[uint key]
         {
             get
             {
@@ -352,57 +337,45 @@ namespace UAM.Kora
             }
         }
 
-        void ICollection<KeyValuePair<uint, T>>.Add(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Contains(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ICollection<KeyValuePair<uint, T>>.CopyTo(KeyValuePair<uint, T>[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        int ICollection<KeyValuePair<uint, T>>.Count
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        bool ICollection<KeyValuePair<uint, T>>.Remove(KeyValuePair<uint, T> item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
+        public override IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
         {
             LeafNode start = leafList, current = leafList;
-            if(current == null)
+            if (current == null)
                 yield break;
 
-            while (current != leafList)
+            do
             {
                 yield return new KeyValuePair<uint, T>(current.key, current.value);
                 current = (LeafNode)current.right;
             }
+            while (current != leafList);
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        public override int Count
         {
-            return GetEnumerator();
+            get { return count; }
+        }
+
+        public override void Clear()
+        {
+            count = 0;
+            version = 0;
+            leafList = null;
+            for (int i = 0; i < width; i++)
+                table[i] = new HashTable<Node>();
+        }
+
+        public override bool ContainsKey(uint key)
+        {
+            Node node;
+            if (table[width - 1].TryGetValue(key >> 1, out node))
+            {
+                if ((key & 1) == 1)
+                    return node.right != null;
+                else
+                    return node.left != null;
+            }
+            return false;
         }
     }
 }
