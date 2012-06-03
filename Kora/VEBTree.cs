@@ -22,7 +22,7 @@ namespace UAM.Kora
             : this(32)
         { }
 
-        internal VEBTree(int width)
+        public VEBTree(int width)
         {
             if (width > 32 || width < 1)
                 throw new ArgumentOutOfRangeException();
@@ -30,30 +30,31 @@ namespace UAM.Kora
             this.width = width;
             if (width > 1)
             {
-                int halfWidth = width / 2;
-                int halfSize = (int)(uint.MaxValue >> (32 - (width / 2))) + 1;
-                summary = new VEBTree<uint>(halfWidth);
+                int highHalf = width / 2 + (width & 1);
+                int lowhHalf = width / 2;
+                int halfSize = (int)(uint.MaxValue >> (32 - highHalf)) + 1;
+                summary = new VEBTree<uint>(highHalf);
                 cluster = new VEBTree<T>[halfSize];
                 for (int i = 0; i < halfSize; i++)
-                    cluster[i] = new VEBTree<T>(halfWidth);
+                    cluster[i] = new VEBTree<T>(lowhHalf);
             }
         }
 
-        private uint HighBits(uint x)
+        internal uint HighBits(uint x)
         {
             int leftShift = 32 - width;
-            return (x << leftShift) >>(leftShift + width / 2);
+            return (x >> width /2);
         }
 
-        private uint LowBits(uint x)
+        internal uint LowBits(uint x)
         {
             int shift = 32 - (width/2);
             return ((x << shift) >> shift);
         }
 
-        private uint Index(uint x, uint y)
+        internal uint Index(uint x, uint y)
         {
-            return (x << (width/2)) + y;
+            return (x << (width/2)) | y;
         }
 
         private void AddChecked(uint key, T value, bool overwrite)
