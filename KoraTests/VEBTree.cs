@@ -64,6 +64,7 @@ namespace UAM.KoraTests
                 tree.Add(i, i.ToString());
         }
 
+        [Test]
         public void SimpleAdd()
         {
             var tree = new VEBTree<string>(4);
