@@ -48,6 +48,22 @@ namespace UAM.KoraTests
         }
 
         [Test]
+        public void HighLow()
+        {
+            var tree = new VEBTree<string>(7);
+            Assert.AreEqual(15, tree.HighBits(127));
+            Assert.AreEqual(7, tree.LowBits(127));
+            Assert.AreEqual(127, tree.Index(15,7));
+        }
+
+        [Test]
+        public void AddUnevenPower()
+        {
+            var tree = new VEBTree<string>(7);
+            for (uint i = 0; i < 128; i++ )
+                tree.Add(i, i.ToString());
+        }
+
         public void SimpleAdd()
         {
             var tree = new VEBTree<string>(4);
