@@ -9,6 +9,8 @@ namespace UAM.Kora
     {
         const int upperLimit = 64;
         const int lowerLimit = 16;
+        int count;
+        uint version;
         internal XFastTrie<RBTree> cluster;
 
         // removes new RBTree from the old tree
@@ -54,8 +56,9 @@ namespace UAM.Kora
             return succ;
         }
 
-        public override void Add(uint key, T value)
+        private void AddChecked(uint key, T value, bool overwrite)
         {
+            
             var separator = Separator(key);
             if (separator == null)
             {
@@ -66,9 +69,25 @@ namespace UAM.Kora
                 return;
             }
             RBUIntNode newNode = new RBUIntNode(key, value);
-            if (separator.value.Intern(key, newNode) != newNode)
-                throw new ArgumentException();
+            RBUIntNode interned = (RBUIntNode)separator.value.Intern(key, newNode);
+            if (interned != newNode)
+            {
+                if (overwrite)
+                    interned.value = value;
+                else
+                    throw new ArgumentException();
+            }
+            else
+            {
+                count++;
+                version++;
+            }
             SplitIfTooLarge(separator);
+        }
+
+        public override void Add(uint key, T value)
+        {
+            AddChecked(key, value, false);
         }
 
         private void SplitIfTooLarge(XFastTrie<RBTree>.LeafNode separator)
@@ -111,18 +130,7 @@ namespace UAM.Kora
             }
             set
             {
-                var separator = Separator(key);
-                if (separator == null)
-                {
-                    // add first element
-                    RBTree newTree = new RBTree(Node.Helper);
-                    newTree.root = new RBUIntNode(key, value) { IsBlack = true };
-                    cluster.Add(uint.MaxValue, newTree);
-                    return;
-                }
-                var node = (RBUIntNode)separator.value.Intern(key, new RBUIntNode(key, value));
-                node.value = value;
-                SplitIfTooLarge(separator);
+                AddChecked(key, value, true);
             }
         }
 
@@ -131,6 +139,8 @@ namespace UAM.Kora
             var separator = Separator(key);
             if (separator == null || separator.value.Remove(key) == null)
                 return false;
+            count--;
+            version++;
             // at this point key is removed from bst
             if (separator.left == separator || separator.value.Count >= lowerLimit)
                 return true;
@@ -228,19 +238,21 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(rbHigher.key, rbHigher.value);
         }
 
-        public override bool ContainsKey(uint key)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void Clear()
         {
-            throw new NotImplementedException();
+            count = 0;
+            version = 0;
+            cluster = new XFastTrie<RBTree>();
         }
 
         public override int Count
         {
-            get { throw new NotImplementedException(); }
+            get { return count; }
+        }
+
+        public override bool ContainsKey(uint key)
+        {
+            throw new NotImplementedException();
         }
 
         public override IEnumerator<KeyValuePair<uint, T>> GetEnumerator()
