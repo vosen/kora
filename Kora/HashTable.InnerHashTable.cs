@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    internal partial class HashTable<T>
+    partial class HashTable<T>
     {
         internal class InnerHashTable
         {
@@ -87,7 +87,7 @@ namespace UAM.Kora
 
             internal uint GetHash(uint x)
             {
-#if DEBUG
+#if TEST
                 return ((a * x + b) % 997) % (uint)Math.Pow(2, this.width);
 #else
             return ((a * x + b) >> (31 - width)) >> 1;

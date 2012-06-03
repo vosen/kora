@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    internal partial class HashTable<T>
+    public partial class HashTable<T> : IDictionary<uint, T>
     {
         private static float Fill = 0.66f;
         // SetSize ~= ((8/15)*sqrt(30)) / 1,5
@@ -19,7 +19,7 @@ namespace UAM.Kora
         internal uint b;
         internal int width;
 
-        internal HashTable()
+        public HashTable()
         {
             random = new Random();
             RehashAll(null);
@@ -68,18 +68,22 @@ namespace UAM.Kora
             }
         }
 
-        public void Remove(uint key)
+        public bool Remove(uint key)
         {
             pseudoCount++;
             uint firstHash = GetHash(key);
             uint secondHash = inner[firstHash].GetHash(key);
+            bool result = false;
             if (inner[firstHash].table[secondHash] != null && inner[firstHash].table[secondHash].Value.Key == key)
             {
                 inner[firstHash].RemoveAt((int)secondHash);
+                result = true;
             }
 
             if (pseudoCount >= limit)
                 RehashAll(null);
+
+            return result;
         }
 
         public bool TryGetValue(uint key, out T value)
@@ -97,7 +101,7 @@ namespace UAM.Kora
 
         internal uint GetHash(uint x)
         {
-#if DEBUG
+#if TEST
             return ((a * x + b) % 997) % (uint)Math.Pow(2, this.width);
 #else
             return ((a * x + b) >> (31 - width)) >> 1;
@@ -187,7 +191,7 @@ namespace UAM.Kora
 
         internal void InitializeRandomHash(out uint a, out uint b)
         {
-#if DEBUG
+#if TEST
             a = (uint)random.Next(1,997);
             b = (uint)random.Next(997);
 #else
@@ -203,7 +207,78 @@ namespace UAM.Kora
             {
                 sum += (uint)((tab.Count << 3) - (4*tab.Count));
             }
-            return sum <= ((32 * inner.Length * inner.Length) / currLimit) + 4 * inner.Length;
+            return sum <= ((32 * (long)inner.Length * (long)inner.Length) / currLimit) + 4 * inner.Length;
+        }
+        bool IDictionary<uint, T>.ContainsKey(uint key)
+        {
+            throw new NotImplementedException();
+        }
+
+        ICollection<uint> IDictionary<uint, T>.Keys
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        ICollection<T> IDictionary<uint, T>.Values
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        T IDictionary<uint, T>.this[uint key]
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        void ICollection<KeyValuePair<uint, T>>.Add(KeyValuePair<uint, T> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<KeyValuePair<uint, T>>.Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ICollection<KeyValuePair<uint, T>>.Contains(KeyValuePair<uint, T> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<KeyValuePair<uint, T>>.CopyTo(KeyValuePair<uint, T>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        int ICollection<KeyValuePair<uint, T>>.Count
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        bool ICollection<KeyValuePair<uint, T>>.IsReadOnly
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        bool ICollection<KeyValuePair<uint, T>>.Remove(KeyValuePair<uint, T> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<KeyValuePair<uint, T>> IEnumerable<KeyValuePair<uint, T>>.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }
