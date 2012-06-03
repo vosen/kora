@@ -12,6 +12,7 @@ namespace UAM.Kora
         //private static uint SetSize = 2;
 
         Random random;
+        int count;
         uint pseudoCount;
         uint limit;
         internal InnerHashTable[] inner;
@@ -28,23 +29,24 @@ namespace UAM.Kora
         // add overwrites
         public void Add(uint key, T value)
         {
+            uint firstHash = GetHash(key);
+            InnerHashTable innerHashed = inner[firstHash];
+            uint secondHash = innerHashed.GetHash(key);
+            // overwrite
+            if (innerHashed.table[secondHash] != null && innerHashed.table[secondHash].Value.Key == key)
+            {
+                throw new ArgumentException();
+            }
+            count++;
             if (++pseudoCount > limit)
             {
                 RehashAll(new KeyValuePair<uint, T>(key, value));
                 return;
             }
-            uint firstHash = GetHash(key);
-            InnerHashTable innerHashed = inner[firstHash];
-            uint secondHash = innerHashed.GetHash(key);
             // empty spot - just plop the value there and call it a day
             if (innerHashed.IsDeleted((int)secondHash))
             {
                 innerHashed.count++;
-                innerHashed.table[secondHash] = new KeyValuePair<uint, T>(key, value);
-            }
-            // replace the value
-            else if (innerHashed.table[secondHash].Value.Key == key)
-            {
                 innerHashed.table[secondHash] = new KeyValuePair<uint, T>(key, value);
             }
             // We've got collision now, do something about it
@@ -78,6 +80,7 @@ namespace UAM.Kora
             {
                 inner[firstHash].RemoveAt((int)secondHash);
                 result = true;
+                count--;
             }
 
             if (pseudoCount >= limit)
@@ -256,9 +259,9 @@ namespace UAM.Kora
             throw new NotImplementedException();
         }
 
-        int ICollection<KeyValuePair<uint, T>>.Count
+        public int Count
         {
-            get { throw new NotImplementedException(); }
+            get { return count; }
         }
 
         bool ICollection<KeyValuePair<uint, T>>.IsReadOnly

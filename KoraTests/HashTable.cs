@@ -30,6 +30,16 @@ namespace UAM.KoraTests
         }
 
         [Test]
+        public void MultipleSameAdd()
+        {
+            var table = new HashTable<string>();
+            table.Add(0, "0");
+            for (int i = 0; i < 7; i++)
+                Assert.Throws<ArgumentException>(() => table.Add(0, "0"));
+            Assert.AreEqual(1, table.Count);
+        }
+
+        [Test]
         public void Adding()
         {
             var table = new HashTable<string>();
