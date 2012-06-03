@@ -5,12 +5,9 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    partial class XFastTrie<T>
+    public class XFastNode
     {
-        internal class Node
-        {
-            internal Node left;
-            internal Node right;
-        }
+        internal XFastNode left;
+        internal XFastNode right;
     }
 }

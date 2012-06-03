@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UAM.Kora;
 using System.Diagnostics;
+using FromMono = Mono.Collections.Generic;
 
 namespace Kora.Benchmarks
 {
@@ -12,15 +13,26 @@ namespace Kora.Benchmarks
         static void Main(string[] args)
         {
             Console.WriteLine("RBTree:");
-            MeasureFor(100000, 131072, new SortedDictionary<uint, uint>());
-            Console.WriteLine("RBTree:");
-            MeasureFor(100000, 131072, new VEBTree<uint>(17));
+            MeasureFor(200000, 262144, new FromMono.SortedDictionary<uint, uint>());
+            GC.Collect();
+            Console.WriteLine("VEB:");
+            MeasureFor(200000, 262144, new VEBTree<uint>(18));
+            GC.Collect();
             Console.WriteLine("DPH:");
-            MeasureFor(100000, 131072, new HashTable<uint>());
-            Console.WriteLine("XFast:");
-            MeasureFor(100000, 131072, new XFastTrie<uint>());
-            Console.WriteLine("YFast:");
-            MeasureFor(100000, 131072, new YFastTrie<uint>());
+            MeasureFor(200000, 262144, new HashTable<uint>());
+            GC.Collect();
+            Console.WriteLine("XFast-DPH:");
+            MeasureFor(200000, 262144, new XFastTrie<uint>(18));
+            GC.Collect();
+            Console.WriteLine("XFast-Standard:");
+            MeasureFor(200000, 262144, XFastTrie<uint>.FromDictionary<Dictionary<uint, XFastNode>>(18));
+            GC.Collect();
+            Console.WriteLine("YFast-DPH:");
+            MeasureFor(200000, 262144, new YFastTrie<uint>(18));
+            GC.Collect();
+            Console.WriteLine("YFast-Standard:");
+            MeasureFor(200000, 262144, YFastTrie<uint>.FromDictionary<Dictionary<uint, XFastNode>>(18));
+            GC.Collect();
             Console.ReadLine();
         }
 

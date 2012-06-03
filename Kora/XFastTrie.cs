@@ -7,25 +7,37 @@ namespace UAM.Kora
 {
     public partial class XFastTrie<T> : SortedDictionaryBase<T>
     {
-        private const int width = 32;
+        internal int width;
         int count;
         int version;
-        HashTable<Node>[] table;
+        IDictionary<uint, XFastNode>[] table;
         internal LeafNode leafList;
 
         public XFastTrie()
+            : this(32) { }
+
+        public XFastTrie(int width)
+            :this(() => new HashTable<XFastNode>(), width) { }
+
+        private XFastTrie(Func<IDictionary<uint, XFastNode>> factory, int bitWidth)
         {
-            table = new HashTable<Node>[width];
-            for (int i = 0; i < width; i++)
-                table[i] = new HashTable<Node>();
+            this.width = bitWidth;
+            table = new IDictionary<uint, XFastNode>[bitWidth];
+            for (int i = 0; i < bitWidth; i++)
+                table[i] = factory();
         }
 
-        private Node Bottom(uint key)
+        public static XFastTrie<T> FromDictionary<TDict>(int width) where TDict : IDictionary<uint, XFastNode>, new()
+        {
+            return new XFastTrie<T>(() => new TDict(), width);
+        }
+
+        private XFastNode Bottom(uint key)
         {
             int l = 0;
             int h = width;
-            Node tempNode;
-            Node correctNode = null;
+            XFastNode tempNode;
+            XFastNode correctNode = null;
             do
             {
                 int j = (l + h) / 2;
@@ -44,7 +56,7 @@ namespace UAM.Kora
             return correctNode;
         }
 
-        private void InsertLeafAfter(Node marker, LeafNode newLeaf)
+        private void InsertLeafAfter(XFastNode marker, LeafNode newLeaf)
         {
             if (marker == null)
             {
@@ -56,7 +68,7 @@ namespace UAM.Kora
                 }
                 else
                 {
-                    Node rightNode = leafList;
+                    XFastNode rightNode = leafList;
                     leafList.left.right = newLeaf;
                     newLeaf.left = leafList.left;
                     newLeaf.right = leafList;
@@ -66,7 +78,7 @@ namespace UAM.Kora
             }
             else
             {
-                Node rightNode = marker.right;
+                XFastNode rightNode = marker.right;
                 marker.right = newLeaf;
                 newLeaf.left = marker;
                 newLeaf.right = rightNode;
@@ -91,7 +103,7 @@ namespace UAM.Kora
             return new KeyValuePair<uint, T>(leftLeaf.key, leftLeaf.value);
         }
 
-        private LeafNode LowerNodeFromBottom(Node bottom, uint key)
+        private LeafNode LowerNodeFromBottom(XFastNode bottom, uint key)
         {
             if (bottom == null)
                 return null;
@@ -109,13 +121,13 @@ namespace UAM.Kora
 
         internal LeafNode LowerNode(uint key)
         {
-            Node ancestor = Bottom(key);
+            XFastNode ancestor = Bottom(key);
             return LowerNodeFromBottom(ancestor, key);
         }
 
         internal LeafNode HigherNode(uint key)
         {
-            Node ancestor = Bottom(key);
+            XFastNode ancestor = Bottom(key);
             if (ancestor == null)
                 return null;
             LeafNode leaf = ancestor.left as LeafNode;
@@ -149,7 +161,7 @@ namespace UAM.Kora
         private void AddChecked(uint key, T value, bool overwrite)
         {
             // Insert node in linked list
-            Node bottom = Bottom(key);
+            XFastNode bottom = Bottom(key);
             LeafNode predecessor = LowerNodeFromBottom(bottom, key);
             // check for overwrite
             LeafNode predRight;
@@ -175,14 +187,14 @@ namespace UAM.Kora
             // Fix the jump path
             if (bottom == null)
             {
-                bottom = new Node();
+                bottom = new XFastNode();
                 table[0].Add(0, bottom);
                 bottom.left = endNode;
                 bottom.right = endNode;
             }
 
-            Node oldNode = null;
-            Node current;
+            XFastNode oldNode = null;
+            XFastNode current;
             for (int i = 0; i < width; i++)
             {
                 uint id = key >> (width - 1 - i) >> 1;
@@ -204,7 +216,7 @@ namespace UAM.Kora
                 else
                 {
                     // insert new node
-                    current = new Node() { left = endNode, right = endNode };
+                    current = new XFastNode() { left = endNode, right = endNode };
                     table[i].Add(id, current);
                     // fix link between old and new node
                     if ((id & 1) > 0)
@@ -251,8 +263,8 @@ namespace UAM.Kora
                     return false;
             }
             // get pointers to node elft and right from endNode
-            Node leftLeaf = endNode.left;
-            Node rightLeaf = endNode.right;
+            XFastNode leftLeaf = endNode.left;
+            XFastNode rightLeaf = endNode.right;
             // remove bottom node from the table and leaf node from the list
             //table[width - 1].Remove(key >> 1);
             RemoveLeaf(endNode);
@@ -260,7 +272,7 @@ namespace UAM.Kora
             bool single = true;
             for(int i = width - 1; i >= 0; i--)
             {
-                Node current;
+                XFastNode current;
                 uint id = key >> (width - 1 - i) >> 1;
                 bool isFromRight = ((key >> (width - 1 - i)) & 1) == 1;
                 table[i].TryGetValue(id, out current);
@@ -298,7 +310,7 @@ namespace UAM.Kora
 
         public override bool TryGetValue(uint key, out T value)
         {
-            Node node;
+            XFastNode node;
             if (table[width - 1].TryGetValue(key >> 1, out node))
             {
                 if ((key & 1) == 1)
@@ -365,12 +377,12 @@ namespace UAM.Kora
             version = 0;
             leafList = null;
             for (int i = 0; i < width; i++)
-                table[i] = new HashTable<Node>();
+                table[i] = new HashTable<XFastNode>();
         }
 
         public override bool ContainsKey(uint key)
         {
-            Node node;
+            XFastNode node;
             if (table[width - 1].TryGetValue(key >> 1, out node))
             {
                 if ((key & 1) == 1)
@@ -387,7 +399,7 @@ namespace UAM.Kora
             var levels = new HashSet<uint>[width];
             for (int i = 0; i < width; i++)
                 levels[i] = new HashSet<uint>();
-            Node temp;
+            XFastNode temp;
             var nodes = this.Select(pair => pair.Key).ToArray();
             foreach (var node in nodes)
             {

@@ -26,5 +26,10 @@ namespace UAM.Kora
             v |= v >> 16;
             return ++v;
         }
+
+        internal static uint MaxValue(int width)
+        {
+            return ((1u << (width-1)) << 1) - 1;
+        }
     }
 }

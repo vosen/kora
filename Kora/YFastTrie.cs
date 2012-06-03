@@ -7,8 +7,8 @@ namespace UAM.Kora
 {
     public partial class YFastTrie<T> : SortedDictionaryBase<T>
     {
-        const int upperLimit = 64;
-        const int lowerLimit = 16;
+        private int upperLimit;
+        private int lowerLimit;
         int count;
         uint version;
         internal XFastTrie<RBTree> cluster;
@@ -35,9 +35,24 @@ namespace UAM.Kora
             return newTree;
         }
 
-        public YFastTrie()
+        private YFastTrie(XFastTrie<RBTree> newTree)
         {
-            cluster = new XFastTrie<RBTree>();
+            cluster = newTree;
+            lowerLimit = (cluster.width / 2);
+            upperLimit = (cluster.width * 2);
+        }
+
+        public YFastTrie()
+            : this(new XFastTrie<RBTree>())
+        { }
+
+        public YFastTrie(int width)
+            : this(new XFastTrie<RBTree>(width))
+        {}
+
+        public static YFastTrie<T> FromDictionary<TDict>(int width) where TDict : IDictionary<uint, XFastNode>, new()
+        {
+            return new YFastTrie<T>(XFastTrie<RBTree>.FromDictionary<TDict>(width));
         }
 
         private XFastTrie<RBTree>.LeafNode Separator(uint key)
@@ -65,7 +80,7 @@ namespace UAM.Kora
                 // add first element
                 RBTree newTree = new RBTree(Node.Helper);
                 newTree.root = new RBUIntNode(key, value) { IsBlack = true };
-                cluster.Add(uint.MaxValue, newTree);
+                cluster.Add(BitHacks.MaxValue(cluster.width), newTree);
                 return;
             }
             RBUIntNode newNode = new RBUIntNode(key, value);
@@ -192,7 +207,7 @@ namespace UAM.Kora
             return true;
         }
 
-        private static bool MergeSplit(ref RBTree higher, ref RBTree lower)
+        private bool MergeSplit(ref RBTree higher, ref RBTree lower)
         {
             RBTree.Node[] array = new RBTree.Node[higher.Count + lower.Count];
             lower.CopySorted(array, 0);

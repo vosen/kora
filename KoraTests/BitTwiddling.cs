@@ -45,5 +45,13 @@ namespace UAM.KoraTests
             a = 128;
             Assert.AreEqual(7, BitHacks.Power2MSB(a));
         }
+
+        [Test]
+        public void MaxValue()
+        {
+            Assert.AreEqual(1, BitHacks.MaxValue(1));
+            Assert.AreEqual(3, BitHacks.MaxValue(2));
+            Assert.AreEqual(uint.MaxValue, BitHacks.MaxValue(32));
+        }
     }
 }

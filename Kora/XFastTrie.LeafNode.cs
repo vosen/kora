@@ -7,7 +7,7 @@ namespace UAM.Kora
 {
     partial class XFastTrie<T>
     {
-        internal class LeafNode : Node
+        internal class LeafNode : XFastNode
         {
             internal uint key;
             internal T value;

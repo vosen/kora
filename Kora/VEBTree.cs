@@ -32,7 +32,7 @@ namespace UAM.Kora
             {
                 int highHalf = width / 2 + (width & 1);
                 int lowhHalf = width / 2;
-                int halfSize = (int)(uint.MaxValue >> (32 - highHalf)) + 1;
+                int halfSize = (int)BitHacks.MaxValue(highHalf) + 1;
                 summary = new VEBTree<uint>(highHalf);
                 cluster = new VEBTree<T>[halfSize];
                 for (int i = 0; i < halfSize; i++)
