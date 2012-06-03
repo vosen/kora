@@ -137,6 +137,9 @@ namespace UAM.Kora
         public override bool Remove(uint key)
         {
             var separator = Separator(key);
+            // TODO: remove this check
+            if (separator != null && !cluster.ContainsKey(separator.key))
+                throw new Exception();
             if (separator == null || separator.value.Remove(key) == null)
                 return false;
             count--;
@@ -145,40 +148,64 @@ namespace UAM.Kora
             if (separator.left == separator || separator.value.Count >= lowerLimit)
                 return true;
             // we need to rebuild
-             XFastTrie<RBTree>.LeafNode adjacent;
+            XFastTrie<RBTree>.LeafNode lower;
+            XFastTrie<RBTree>.LeafNode higher;
             var left = (XFastTrie<RBTree>.LeafNode)separator.left;
             var right = (XFastTrie<RBTree>.LeafNode)separator.right;
             // pick best merge candidate
             if (left.key > separator.key)
-                adjacent = right;
+            {
+                // we are the first leaf
+                lower = separator;
+                higher = right;
+            }
             else if (right.key < separator.key)
-                adjacent = left;
-            else 
-                adjacent = left.value.Count <= right.value.Count ? left : right;
-            if (!MergeSplit(separator, adjacent))
-                cluster.Remove(adjacent.key);
+            {
+                // we are the last leaf
+                lower = left;
+                higher = separator;
+            }
+            // separate branch, we want to avoid situation where we compare count of
+            // leaf on the other side of linked list's circle
+            else if (left.value.Count < right.value.Count)
+            {
+                lower = left;
+                higher = separator;
+            }
+            else
+            {
+                lower = separator;
+                higher = right;
+            }
+            if (MergeSplit(ref higher.value, ref lower.value))
+            {
+                // Split happened: reinsert lower key
+                System.Diagnostics.Debug.Assert(cluster.Remove(lower.key));
+                lower.key = ((RBUIntNode)lower.value.LastNode()).key;
+                cluster.Add(lower.key, lower.value);
+            }
+            else
+            {
+                // Only merge happened: just remove lower node
+                cluster.Remove(lower.key);
+            }
             return true;
         }
 
-        private static bool MergeSplit(XFastTrie<RBTree>.LeafNode primary, XFastTrie<RBTree>.LeafNode secondary)
+        private static bool MergeSplit(ref RBTree higher, ref RBTree lower)
         {
-            XFastTrie<RBTree>.LeafNode lower = primary.key < secondary.key ? primary : secondary;
-            XFastTrie<RBTree>.LeafNode higher = lower == primary ? secondary : primary;
-            RBTree.Node[] array = new RBTree.Node[primary.value.Count + secondary.value.Count];
-            lower.value.CopySorted(array, 0);
-            higher.value.CopySorted(array, lower.value.Count);
+            RBTree.Node[] array = new RBTree.Node[higher.Count + lower.Count];
+            lower.CopySorted(array, 0);
+            higher.CopySorted(array, lower.Count);
             if (array.Length > upperLimit)
             {
-                lower.value = RBUtils.FromSortedList(array, 0, array.Length >> 1);
-                lower.key = ((RBUIntNode)array[array.Length >> 1]).key;
-                higher.value = RBUtils.FromSortedList(array, (array.Length >> 1) + 1, array.Length - 1);
-                higher.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
+                lower = RBUtils.FromSortedList(array, 0, array.Length >> 1);
+                higher = RBUtils.FromSortedList(array, (array.Length >> 1) + 1, array.Length - 1);
                 return true;
             }
             else
             {
-                primary.value = RBUtils.FromSortedList(array, 0, array.Length - 1);
-                primary.key = Math.Max(((RBUIntNode)array[array.Length - 1]).key, higher.key);
+                higher = RBUtils.FromSortedList(array, 0, array.Length - 1);
                 return false;
             }
         }
@@ -259,5 +286,16 @@ namespace UAM.Kora
         {
             throw new NotImplementedException();
         }
+
+#if DEBUG
+        public void Verify()
+        {
+            cluster.Verify();
+            foreach (var node in cluster)
+            {
+                node.Value.VerifyInvariants();
+            }
+        }
+#endif
     }
 }

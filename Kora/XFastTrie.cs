@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UAM.Kora
 {
-    partial class XFastTrie<T> : SortedDictionaryBase<T>
+    public partial class XFastTrie<T> : SortedDictionaryBase<T>
     {
         private const int width = 32;
         int count;
@@ -286,9 +286,9 @@ namespace UAM.Kora
                 else
                 {
                     if (current.left == endNode)
-                        current.right = rightLeaf;
+                        current.left = rightLeaf;
                     else if (current.right == endNode)
-                        current.left = leftLeaf;
+                        current.right = leftLeaf;
                 }
             }
             count--;
@@ -380,5 +380,38 @@ namespace UAM.Kora
             }
             return false;
         }
+
+#if DEBUG
+        public void Verify()
+        {
+            var levels = new HashSet<uint>[width];
+            for (int i = 0; i < width; i++)
+                levels[i] = new HashSet<uint>();
+            Node temp;
+            var nodes = this.Select(pair => pair.Key).ToArray();
+            foreach (var node in nodes)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    // check levels
+                    uint id = node >> (width - 1 - i) >> 1;
+                    if(!table[i].TryGetValue(id, out temp))
+                        throw new Exception();
+                    if(temp.left is LeafNode && !nodes.Contains(((LeafNode)temp.left).key))
+                        throw new Exception();
+                    if (temp.right is LeafNode && !nodes.Contains(((LeafNode)temp.right).key))
+                        throw new Exception();
+                    if (i == width - 1 && (!(temp.left is LeafNode) || !(temp.right is LeafNode)))
+                        throw new Exception();
+                    levels[i].Add(id);
+                }
+            }
+            for(int i =0; i < width; i++)
+            {
+                if (table[i].Count != levels[i].Count)
+                    throw new Exception();
+            }
+        }
+#endif
     }
 }
