@@ -17,7 +17,7 @@ def load_files(file_list):
     
 
 files=filter(lambda x: not re.match(".*\.py", x), os.listdir("."))
-perf_values = sorted(load_files(files), key = lambda perf: perf[-1], reverse=True)
+perf_values = sorted(load_files(files), key = lambda perf: perf[2][-1], reverse=True)
 
 pyplot.figure(figsize=(12,8))
 i = 0

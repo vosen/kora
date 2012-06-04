@@ -19,8 +19,8 @@ def load_files(file_list):
 files=filter(lambda x: not re.match(".*\.py", x), os.listdir("."))
 add_files = filter(lambda x: re.match(".*-ADD", x), files)
 del_files = filter(lambda x: re.match(".*-DEL", x), files)
-add_perf = sorted(load_files(add_files), key = lambda perf: perf[-1], reverse=True)
-del_perf = sorted(load_files(del_files), key = lambda perf: perf[-1], reverse=True)
+add_perf = sorted(load_files(add_files), key = lambda perf: perf[2][-1], reverse=True)
+del_perf = sorted(load_files(del_files), key = lambda perf: perf[2][-1], reverse=True)
 
 pyplot.figure(figsize=(12,8))
 i = 0
