@@ -13,9 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4C9850
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Microbenchmarks", "Kora.Microbenchmarks\Kora.Microbenchmarks.csproj", "{29D7D82B-D3EE-492B-B6C7-65061893B48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarks", "Kora.Benchmarks\Kora.Benchmarks.csproj", "{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking", "Kora.Benchmarks\Kora.Benchmarking.csproj", "{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.SortedDictionary", "Mono.SortedDictionary\Mono.SortedDictionary.csproj", "{4E51EE15-B34B-4CD7-9404-BB941D460093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Forms", "Kora.Visual\Kora.Benchmarking.Forms.csproj", "{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.CLI", "Kora.Benchmarks.CLI\Kora.Benchmarking.CLI.csproj", "{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,26 @@ Global
 		{4E51EE15-B34B-4CD7-9404-BB941D460093}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4E51EE15-B34B-4CD7-9404-BB941D460093}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4E51EE15-B34B-4CD7-9404-BB941D460093}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Debug|x86.ActiveCfg = Debug|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Debug|x86.Build.0 = Debug|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Release|Any CPU.ActiveCfg = Release|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Release|Mixed Platforms.Build.0 = Release|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Release|x86.ActiveCfg = Release|x86
+		{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}.Release|x86.Build.0 = Release|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Debug|x86.ActiveCfg = Debug|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Debug|x86.Build.0 = Debug|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Release|Any CPU.ActiveCfg = Release|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Release|Mixed Platforms.Build.0 = Release|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Release|x86.ActiveCfg = Release|x86
+		{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

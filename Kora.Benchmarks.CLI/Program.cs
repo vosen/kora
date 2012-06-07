@@ -132,7 +132,7 @@ namespace Kora.Benchmarks
             Tuple<int, Tuple<long, long>>[] dphResults = new Tuple<int, Tuple<long, long>>[count];
             Tuple<int, Tuple<long, long>>[] xfastDPHResults = new Tuple<int, Tuple<long, long>>[count];
             Tuple<int, Tuple<long, long>>[] yfastDPHResults = new Tuple<int, Tuple<long, long>>[count];
-            
+
             // calc the ranges
             int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
@@ -198,7 +198,7 @@ namespace Kora.Benchmarks
 
         static long MeasureSearch(IEnumerable<uint> itemSet, uint[] searchSet, IDictionary<uint, uint> dict)
         {
-            foreach(uint elm in itemSet)
+            foreach (uint elm in itemSet)
                 dict.Add(elm, elm);
             var timer = new Stopwatch();
             timer.Start();
@@ -252,7 +252,7 @@ namespace Kora.Benchmarks
             for (int i = array.Length; i > 1; i--)
             {
                 // Pick random element to swap.
-             int j = random.Next(i); // 0 <= j <= i-1
+                int j = random.Next(i); // 0 <= j <= i-1
                 // Swap.
                 T tmp = array[j];
                 array[j] = array[i - 1];
