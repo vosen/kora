@@ -59,7 +59,14 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RBTree.cs" />
+    <Compile Include="RBTreeExtensions.cs" />
     <Compile Include="SortedDictionary.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kora\Kora.csproj">
+      <Project>{99F6CE29-D46C-4C99-8C83-F94815EBFFD6}</Project>
+      <Name>Kora</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -36,7 +36,7 @@ namespace UAM.Kora
             Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
 
             // calc the ranges
-            int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
             int positive = (int)(0.9 * control);
             int negative = control - positive;
@@ -131,7 +131,7 @@ namespace UAM.Kora
             Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
 
             // calc the ranges
-            int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
             int positive = (int)(0.9 * control);
             int negative = control - positive;
@@ -205,9 +205,120 @@ namespace UAM.Kora
             return results;
         }
 
+        // that one parameter is there to 
         public static MeasureResults MeasureSeriesMemory(StructureType types, int start, int count, int step)
         {
-            throw new NotImplementedException();
+            // validate types
+            types &= DictionaryMask;
+
+            // initialize result sets
+            Tuple<long, long>[] rbTreeResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] vebResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] dphResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] xfastDPHResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] yfastDPHResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] xfastStandardResults = new Tuple<long, long>[count];
+            Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
+
+            // calc the ranges
+            int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int width = BitHacks.Power2MSB((uint)maxval);
+
+            // run benchmarks
+            int i = 0;
+            foreach (var size in Enumerable.Range(0, count).Select(x => start + (x * step)))
+            {
+                var itemSet = GenerateRandomSet(size, maxval).ToArray();
+                if (types.HasFlag(StructureType.RBTree))
+                {
+                    rbTreeResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = new FromMono.SortedDictionary<uint, uint>();
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.VEB))
+                {
+                    vebResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = new VEBTree<uint>(width);
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.DPH))
+                {
+                    dphResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = new HashTable<uint>();
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.XTrieDPH))
+                {
+                    xfastDPHResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = new XFastTrie<uint>(width);
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.YTrieDPH))
+                {
+                    yfastDPHResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = new YFastTrie<uint>(width);
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.XTrieStandard))
+                {
+                    xfastStandardResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = XFastTrie<uint>.FromDictionary<Dictionary<uint, XFastNode>>(width);
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                if (types.HasFlag(StructureType.YTrieStandard))
+                {
+                    yfastStandardResults[i] = Tuple.Create(
+                        (long)size,
+                        MeasureMemory(() =>
+                        {
+                            var dict = YFastTrie<uint>.FromDictionary<Dictionary<uint, XFastNode>>(width);
+                            Fill(itemSet, itemSet, dict);
+                            return dict;
+                        }));
+                }
+                i++;
+            }
+
+            // dump the results
+            MeasureResults results = new MeasureResults(types, maxval);
+            results.SetResults(StructureType.RBTree, rbTreeResults);
+            results.SetResults(StructureType.VEB, vebResults);
+            results.SetResults(StructureType.DPH, dphResults);
+            results.SetResults(StructureType.XTrieDPH, xfastDPHResults);
+            results.SetResults(StructureType.YTrieDPH, yfastDPHResults);
+            results.SetResults(StructureType.XTrieStandard, xfastStandardResults);
+            results.SetResults(StructureType.YTrieStandard, yfastStandardResults);
+            return results;
         }
 
         public static MeasureResults MeasureSeriesAdd(StructureType types, int start, int count, int step)
@@ -225,7 +336,7 @@ namespace UAM.Kora
             Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
 
             // calc the ranges
-            int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
 
             // run benchmarks
@@ -277,7 +388,7 @@ namespace UAM.Kora
             Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
 
             // calc the ranges
-            int maxval = (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
 
             // run benchmarks
@@ -388,12 +499,14 @@ namespace UAM.Kora
 
         static long MeasureMemory<T>(Func<T> generator)
         {
-            Process currentProcess = System.Diagnostics.Process.GetCurrentProcess();
+            T temp;
             GC.Collect();
-            long start = currentProcess.WorkingSet64;
-            T temp = generator();
+            long start = GC.GetTotalMemory(true);
+            temp = generator();
             GC.Collect();
-            return currentProcess.WorkingSet64 - start;
+            long space = GC.GetTotalMemory(false) - start;
+            GC.KeepAlive(temp);
+            return space;
         }
 
         public static HashSet<uint> GenerateRandomSet(int size, int range)

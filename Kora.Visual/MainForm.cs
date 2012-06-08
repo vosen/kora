@@ -20,6 +20,13 @@ namespace Kora.Visual
         public MainForm()
         {
             InitializeComponent();
+            // setup proper names
+            RBTreeCheck.Text = Properties.Resources.RBTree;
+            VEBCheck.Text = Properties.Resources.VEB;
+            XTrieDPHCheck.Text = Properties.Resources.XTrieDPH;
+            YTrieDPHCheck.Text = Properties.Resources.YTrieDPH;
+            XTrieStandardCheck.Text = Properties.Resources.XTrieStandard;
+            YTrieStandardCheck.Text = Properties.Resources.YTrieStandard;
         }
 
         private void ForwardClicked(object sender, EventArgs e)

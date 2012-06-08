@@ -25,37 +25,37 @@ namespace Kora.Visual
             if ((results.Types & StructureType.RBTree) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.RBTree));
-                series.Name = "RBTree";
+                series.Name = Properties.Resources.RBTree;
                 yield return series;
             }
             if ((results.Types & StructureType.VEB) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.VEB));
-                series.Name = "VEB";
+                series.Name = Properties.Resources.VEB;
                 yield return series;
             }
             if ((results.Types & StructureType.XTrieDPH) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.XTrieDPH));
-                series.Name = "XTrieDPH";
+                series.Name = Properties.Resources.XTrieDPH;
                 yield return series;
             }
             if ((results.Types & StructureType.YTrieDPH) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.YTrieDPH));
-                series.Name = "YTrieDPH";
+                series.Name = Properties.Resources.YTrieDPH;
                 yield return series;
             }
             if ((results.Types & StructureType.XTrieStandard) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.XTrieStandard));
-                series.Name = "XTrieStandard";
+                series.Name = Properties.Resources.XTrieStandard;
                 yield return series;
             }
             if ((results.Types & StructureType.YTrieStandard) > 0)
             {
                 var series = ConvertResults(results.GetResults(StructureType.YTrieStandard));
-                series.Name = "YTrieStandard";
+                series.Name = Properties.Resources.YTrieStandard;
                 yield return series;
             }
         }

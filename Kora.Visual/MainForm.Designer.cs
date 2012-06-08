@@ -168,7 +168,7 @@
             this.groupBox2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox2.Controls.Add(this.tableLayoutPanel1);
             this.flowLayoutPanel4.SetFlowBreak(this.groupBox2, true);
-            this.groupBox2.Location = new System.Drawing.Point(3, 169);
+            this.groupBox2.Location = new System.Drawing.Point(172, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(290, 123);
             this.groupBox2.TabIndex = 2;
@@ -217,7 +217,7 @@
             this.ControlCountControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ControlCountControl.Location = new System.Drawing.Point(161, 81);
             this.ControlCountControl.Maximum = new decimal(new int[] {
-            2147483647,
+            1000000000,
             0,
             0,
             0});
@@ -237,7 +237,12 @@
             this.CountControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.CountControl.Location = new System.Drawing.Point(161, 55);
             this.CountControl.Maximum = new decimal(new int[] {
-            2147483647,
+            1000,
+            0,
+            0,
+            0});
+            this.CountControl.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -255,7 +260,7 @@
             this.StartControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.StartControl.Location = new System.Drawing.Point(161, 3);
             this.StartControl.Maximum = new decimal(new int[] {
-            2147483647,
+            1000000000,
             0,
             0,
             0});
@@ -303,7 +308,7 @@
             this.StepControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.StepControl.Location = new System.Drawing.Point(161, 29);
             this.StepControl.Maximum = new decimal(new int[] {
-            2147483647,
+            1000000000,
             0,
             0,
             0});
@@ -324,7 +329,7 @@
             this.groupBox3.Location = new System.Drawing.Point(108, 3);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(0, 3, 3, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(260, 157);
+            this.groupBox3.Size = new System.Drawing.Size(52, 157);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Struktury danych";
@@ -344,7 +349,7 @@
             this.flowLayoutPanel3.Location = new System.Drawing.Point(3, 16);
             this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(254, 138);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(46, 138);
             this.flowLayoutPanel3.TabIndex = 6;
             // 
             // RBTreeCheck
@@ -354,9 +359,9 @@
             this.RBTreeCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.RBTreeCheck.Location = new System.Drawing.Point(3, 3);
             this.RBTreeCheck.Name = "RBTreeCheck";
-            this.RBTreeCheck.Size = new System.Drawing.Size(146, 17);
+            this.RBTreeCheck.Size = new System.Drawing.Size(40, 17);
             this.RBTreeCheck.TabIndex = 7;
-            this.RBTreeCheck.Text = "Drzewo czerwono-czarne";
+            this.RBTreeCheck.Text = "##";
             this.RBTreeCheck.UseVisualStyleBackColor = true;
             // 
             // VEBCheck
@@ -364,9 +369,9 @@
             this.VEBCheck.AutoSize = true;
             this.VEBCheck.Location = new System.Drawing.Point(3, 26);
             this.VEBCheck.Name = "VEBCheck";
-            this.VEBCheck.Size = new System.Drawing.Size(146, 17);
+            this.VEBCheck.Size = new System.Drawing.Size(40, 17);
             this.VEBCheck.TabIndex = 12;
-            this.VEBCheck.Text = "Drzewo van Emde Boasa";
+            this.VEBCheck.Text = "##";
             this.VEBCheck.UseVisualStyleBackColor = true;
             // 
             // XTrieDPHCheck
@@ -374,9 +379,9 @@
             this.XTrieDPHCheck.AutoSize = true;
             this.XTrieDPHCheck.Location = new System.Drawing.Point(3, 49);
             this.XTrieDPHCheck.Name = "XTrieDPHCheck";
-            this.XTrieDPHCheck.Size = new System.Drawing.Size(248, 17);
+            this.XTrieDPHCheck.Size = new System.Drawing.Size(40, 17);
             this.XTrieDPHCheck.TabIndex = 8;
-            this.XTrieDPHCheck.Text = "Drzewo x-szybkie z haszowaniem perfekcyjnym";
+            this.XTrieDPHCheck.Text = "##";
             this.XTrieDPHCheck.UseVisualStyleBackColor = true;
             // 
             // YTrieDPHCheck
@@ -384,9 +389,9 @@
             this.YTrieDPHCheck.AutoSize = true;
             this.YTrieDPHCheck.Location = new System.Drawing.Point(3, 72);
             this.YTrieDPHCheck.Name = "YTrieDPHCheck";
-            this.YTrieDPHCheck.Size = new System.Drawing.Size(248, 17);
+            this.YTrieDPHCheck.Size = new System.Drawing.Size(40, 17);
             this.YTrieDPHCheck.TabIndex = 9;
-            this.YTrieDPHCheck.Text = "Drzewo y-szybkie z haszowaniem perfekcyjnym";
+            this.YTrieDPHCheck.Text = "##";
             this.YTrieDPHCheck.UseVisualStyleBackColor = true;
             // 
             // XTrieStandardCheck
@@ -396,9 +401,9 @@
             this.XTrieStandardCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.XTrieStandardCheck.Location = new System.Drawing.Point(3, 95);
             this.XTrieStandardCheck.Name = "XTrieStandardCheck";
-            this.XTrieStandardCheck.Size = new System.Drawing.Size(242, 17);
+            this.XTrieStandardCheck.Size = new System.Drawing.Size(40, 17);
             this.XTrieStandardCheck.TabIndex = 11;
-            this.XTrieStandardCheck.Text = "Drzewo x-szybkie z zwyczajnym haszowaniem";
+            this.XTrieStandardCheck.Text = "##";
             this.XTrieStandardCheck.UseVisualStyleBackColor = true;
             // 
             // YTrieStandardCheck
@@ -408,9 +413,9 @@
             this.YTrieStandardCheck.CheckState = System.Windows.Forms.CheckState.Checked;
             this.YTrieStandardCheck.Location = new System.Drawing.Point(3, 118);
             this.YTrieStandardCheck.Name = "YTrieStandardCheck";
-            this.YTrieStandardCheck.Size = new System.Drawing.Size(242, 17);
+            this.YTrieStandardCheck.Size = new System.Drawing.Size(40, 17);
             this.YTrieStandardCheck.TabIndex = 10;
-            this.YTrieStandardCheck.Text = "Drzewo y-szybkie z zwyczajnym haszowaniem";
+            this.YTrieStandardCheck.Text = "##";
             this.YTrieStandardCheck.UseVisualStyleBackColor = true;
             // 
             // flowLayoutPanel1
@@ -424,7 +429,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(371, 160);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(163, 160);
             this.flowLayoutPanel1.TabIndex = 5;
             // 
             // flowLayoutPanel4

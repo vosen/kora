@@ -110,7 +110,7 @@ namespace Mono.Collections.Generic
 #endif
 		}
 
-		Node root;
+		internal Node root;
 		object hlp;
 		uint version;
 
