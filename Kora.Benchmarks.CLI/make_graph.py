@@ -16,13 +16,14 @@ def load_files(file_list):
     return perf
     
 
-files=filter(lambda x: not re.match(".*\.py", x), os.listdir("."))
+files=filter(lambda x: not re.match(".*\.", x), os.listdir("."))
+end_index = files[0][::-1].index('-') + 1
 perf_values = sorted(load_files(files), key = lambda perf: perf[2][-1], reverse=True)
 
 pyplot.figure(figsize=(12,8))
 i = 0
 for val in perf_values:
-    pyplot.plot(val[1], val[2], label=val[0][:-7], linestyle='--', marker=markers[i])
+    pyplot.plot(val[1], val[2], label=val[0][:-end_index], linestyle='--', marker=markers[i])
     i+=1
 pyplot.legend(loc=2)
-pyplot.savefig("search.svg", bbox_inches='tight')
+pyplot.savefig("graph.svg", bbox_inches='tight')

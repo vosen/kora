@@ -19,6 +19,8 @@ namespace UAM.Kora
 
         public Tuple<long, long>[] GetResults(StructureType type)
         {
+            if ((Types & type) == 0)
+                return null;
             return results[BitHacks.Power2MSB((uint)type)];
         }
 
