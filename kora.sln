@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora", "Kora\Kora.csproj", "{99F6CE29-D46C-4C99-8C83-F94815EBFFD6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KoraTests", "KoraTests\KoraTests.csproj", "{7DDC7776-C2CA-40A6-B6DA-8CF07BD043EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Tests", "Kora.Tests\Kora.Tests.csproj", "{7DDC7776-C2CA-40A6-B6DA-8CF07BD043EE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4C98507E-7E95-49EA-8BA4-7A6512A79975}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,13 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4C9850
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Microbenchmarks", "Kora.Microbenchmarks\Kora.Microbenchmarks.csproj", "{29D7D82B-D3EE-492B-B6C7-65061893B48F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking", "Kora.Benchmarks\Kora.Benchmarking.csproj", "{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking", "Kora.Benchmarking\Kora.Benchmarking.csproj", "{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.SortedDictionary", "Mono.SortedDictionary\Mono.SortedDictionary.csproj", "{4E51EE15-B34B-4CD7-9404-BB941D460093}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Forms", "Kora.Visual\Kora.Benchmarking.Forms.csproj", "{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Forms", "Kora.Benchmarking.Forms\Kora.Benchmarking.Forms.csproj", "{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.CLI", "Kora.Benchmarks.CLI\Kora.Benchmarking.CLI.csproj", "{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Console", "Kora.Benchmarking.CLI\Kora.Benchmarking.Console.csproj", "{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

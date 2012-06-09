@@ -6,7 +6,7 @@ using NUnit.Framework;
 using UAM.Kora;
 using KVP = System.Collections.Generic.KeyValuePair<uint, string>;
 
-namespace UAM.KoraTests
+namespace UAM.Kora.Tests
 {
     [TestFixture]
     class XFastTrie

@@ -8,7 +8,7 @@ using YTrie = UAM.Kora.YFastTrie<string>;
 using KVP = System.Collections.Generic.KeyValuePair<uint, string>;
 using Node = UAM.Kora.YFastTrie<string>.RBUIntNode;
 
-namespace KoraTests
+namespace UAM.Kora.Tests
 {
     [TestFixture]
     class YFastTrie

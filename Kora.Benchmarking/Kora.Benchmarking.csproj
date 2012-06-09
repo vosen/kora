@@ -8,7 +8,7 @@
     <ProjectGuid>{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kora.Benchmarking</RootNamespace>
+    <RootNamespace>UAM.Kora</RootNamespace>
     <AssemblyName>Kora.Benchmarking</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

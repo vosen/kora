@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
-namespace Kora.Microbenchmarks
+namespace UAM.Kora.Microbenchmarks
 {
     internal static class BitHacks
     {

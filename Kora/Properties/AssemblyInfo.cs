@@ -36,5 +36,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 // Allow acces to the testing assemblyClassLibrary1
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("KoraTests")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ClassLibrary1")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Kora.Tests")]

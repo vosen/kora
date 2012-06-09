@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using UAM.Kora;
 
-namespace UAM.KoraTests
+namespace UAM.Kora.Tests
 {
     [TestFixture]
     class HashTable

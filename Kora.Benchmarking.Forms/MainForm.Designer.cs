@@ -1,4 +1,4 @@
-﻿namespace Kora.Visual
+﻿namespace UAM.Kora.Forms
 {
     partial class MainForm
     {
@@ -468,7 +468,7 @@
             this.Controls.Add(this.flowLayoutPanel4);
             this.Controls.Add(this.button1);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "Ustawienia";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);

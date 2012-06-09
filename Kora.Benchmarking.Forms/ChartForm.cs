@@ -10,7 +10,7 @@ using UAM.Kora;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Threading.Tasks;
 
-namespace Kora.Visual
+namespace UAM.Kora.Forms
 {
     public partial class ChartForm : Form
     {
@@ -35,7 +35,7 @@ namespace Kora.Visual
             {
                 default:
                 case BenchmarkType.Add:
-                    return Benchmarking.MeasureSeriesAdd(types, start, count, step);
+                    return UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, step);
                 case BenchmarkType.Delete:
                     return Benchmarking.MeasureSeriesDelete(types, start, count, step);
                 case BenchmarkType.Search:

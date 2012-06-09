@@ -1,4 +1,4 @@
-﻿namespace Kora.Visual
+﻿namespace UAM.Kora.Forms
 {
     partial class ChartForm
     {

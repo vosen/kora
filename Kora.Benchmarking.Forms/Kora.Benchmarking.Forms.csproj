@@ -8,8 +8,8 @@
     <ProjectGuid>{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kora.Visual</RootNamespace>
-    <AssemblyName>Kora.Visual</AssemblyName>
+    <RootNamespace>UAM.Kora.Forms</RootNamespace>
+    <AssemblyName>Kora.Forms</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -101,7 +101,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kora.Benchmarks\Kora.Benchmarking.csproj">
+    <ProjectReference Include="..\Kora.Benchmarking\Kora.Benchmarking.csproj">
       <Project>{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}</Project>
       <Name>Kora.Benchmarking</Name>
     </ProjectReference>

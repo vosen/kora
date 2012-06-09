@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using UAM.Kora;
 using System.Diagnostics;
 using System.IO;
+using UAM.Kora;
 
-namespace Kora.Benchmarking.CLI
+namespace UAM.Kora.Console
 {
     class Program
     {
@@ -18,12 +18,12 @@ namespace Kora.Benchmarking.CLI
         {
             if (args.Length != 6 && args.Length != 7)
             {
-                Console.WriteLine("USAGE: Kora.Benchmark.exe PATH START COUNT STEP <F|S> <ad|r> [CONTROL]");
-                Console.WriteLine("PATH - where to dump the results");
-                Console.WriteLine("START, COUNT, STEP - controls amount of elements in collections.");
-                Console.WriteLine("<F|S> - F is for fast structures only: rbtree, veb, xtrie-std, ytrie-std, S is for all");
-                Console.WriteLine("<a|d|f|s|m> - benchmark type: (a)dd, (d)el, (f)ind, (s)ucc, (m)emory");
-                Console.WriteLine("CONTROL - When measuring find and succ how many keys should we search");
+                System.Console.WriteLine("USAGE: Kora.Benchmark.exe PATH START COUNT STEP <F|S> <ad|r> [CONTROL]");
+                System.Console.WriteLine("PATH - where to dump the results");
+                System.Console.WriteLine("START, COUNT, STEP - controls amount of elements in collections.");
+                System.Console.WriteLine("<F|S> - F is for fast structures only: rbtree, veb, xtrie-std, ytrie-std, S is for all");
+                System.Console.WriteLine("<a|d|f|s|m> - benchmark type: (a)dd, (d)el, (f)ind, (s)ucc, (m)emory");
+                System.Console.WriteLine("CONTROL - When measuring find and succ how many keys should we search");
                 return;
             }
             string path = args[0];
@@ -60,19 +60,19 @@ namespace Kora.Benchmarking.CLI
             switch(type)
             {
                 case BenchmarkType.Add:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
+                    results = Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
                     break;
                 case BenchmarkType.Delete:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesDelete(types, start, count, start);
+                    results = Kora.Benchmarking.MeasureSeriesDelete(types, start, count, start);
                     break;
                 case BenchmarkType.Search:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesSearch(types, start, count, start, rets);
+                    results = Kora.Benchmarking.MeasureSeriesSearch(types, start, count, start, rets);
                     break;
                 case BenchmarkType.Successor:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesSuccessor(types, start, count, start, rets);
+                    results = Kora.Benchmarking.MeasureSeriesSuccessor(types, start, count, start, rets);
                     break;
                 case BenchmarkType.Memory:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesMemory(types, start, count, start);
+                    results = Kora.Benchmarking.MeasureSeriesMemory(types, start, count, start);
                     break;
             }
 

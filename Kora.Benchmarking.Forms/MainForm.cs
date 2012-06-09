@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using UAM.Kora;
 
-namespace Kora.Visual
+namespace UAM.Kora.Forms
 {
     public partial class MainForm : Form
     {

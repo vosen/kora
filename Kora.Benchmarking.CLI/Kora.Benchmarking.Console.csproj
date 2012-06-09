@@ -8,8 +8,8 @@
     <ProjectGuid>{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kora.Benchmarks.CLI</RootNamespace>
-    <AssemblyName>Kora.Benchmarks.CLI</AssemblyName>
+    <RootNamespace>UAM.Kora.Console</RootNamespace>
+    <AssemblyName>Kora.Console</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -61,7 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kora.Benchmarks\Kora.Benchmarking.csproj">
+    <ProjectReference Include="..\Kora.Benchmarking\Kora.Benchmarking.csproj">
       <Project>{5D0FF3E8-BCDC-4853-BB0B-FFBDB9107967}</Project>
       <Name>Kora.Benchmarking</Name>
     </ProjectReference>

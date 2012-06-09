@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Kora.Benchmarking.CLI
+namespace UAM.Kora.Forms
 {
     public enum BenchmarkType
     {

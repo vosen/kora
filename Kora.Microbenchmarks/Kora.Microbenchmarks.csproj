@@ -8,7 +8,7 @@
     <ProjectGuid>{29D7D82B-D3EE-492B-B6C7-65061893B48F}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kora.Microbenchmarks</RootNamespace>
+    <RootNamespace>UAM.Kora.Microbenchmarks</RootNamespace>
     <AssemblyName>Kora.Microbenchmarks</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
