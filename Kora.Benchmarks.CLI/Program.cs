@@ -63,60 +63,67 @@ namespace Kora.Benchmarking.CLI
                     results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
                     break;
                 case BenchmarkType.Delete:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
+                    results = UAM.Kora.Benchmarking.MeasureSeriesDelete(types, start, count, start);
                     break;
                 case BenchmarkType.Search:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
+                    results = UAM.Kora.Benchmarking.MeasureSeriesSearch(types, start, count, start, rets);
                     break;
                 case BenchmarkType.Successor:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
+                    results = UAM.Kora.Benchmarking.MeasureSeriesSuccessor(types, start, count, start, rets);
                     break;
                 case BenchmarkType.Memory:
-                    results = UAM.Kora.Benchmarking.MeasureSeriesAdd(types, start, count, start);
+                    results = UAM.Kora.Benchmarking.MeasureSeriesMemory(types, start, count, start);
                     break;
             }
+
+            bool isMemory = type == BenchmarkType.Memory;
 
             Tuple<long, long>[] currentResults;
             // dump rbtree
             currentResults = results.GetResults(StructureType.RBTree);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "RBTree"));
+                DumpResults(currentResults, Path.Combine(path, "RBTree"), isMemory);
             // dump veb
             currentResults = results.GetResults(StructureType.VEB);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "VEB"));
+                DumpResults(currentResults, Path.Combine(path, "VEB"), isMemory);
             // dump dph
             currentResults = results.GetResults(StructureType.DPH);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "DPH"));
+                DumpResults(currentResults, Path.Combine(path, "DPH"), isMemory);
             // dump dph
             currentResults = results.GetResults(StructureType.DPH);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "DPH"));
+                DumpResults(currentResults, Path.Combine(path, "DPH"), isMemory);
             // dump xt-dph
             currentResults = results.GetResults(StructureType.XTrieDPH);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "XTrie-DPH"));
+                DumpResults(currentResults, Path.Combine(path, "XTrie-DPH"), isMemory);
             // dump yt-dph
             currentResults = results.GetResults(StructureType.YTrieDPH);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "YTrie-DPH"));
+                DumpResults(currentResults, Path.Combine(path, "YTrie-DPH"), isMemory);
             // dump xt-std
             currentResults = results.GetResults(StructureType.XTrieStandard);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "XTrie-Standard"));
+                DumpResults(currentResults, Path.Combine(path, "XTrie-Standard"), isMemory);
             // dump yt-std
             currentResults = results.GetResults(StructureType.YTrieStandard);
             if (currentResults != null)
-                DumpResults(currentResults, Path.Combine(path, "YTrie-Standard"));
+                DumpResults(currentResults, Path.Combine(path, "YTrie-Standard"), isMemory);
         }
 
-        static void DumpResults(IEnumerable<Tuple<long, long>> results, string name)
+        static void DumpResults(IEnumerable<Tuple<long, long>> results, string name, bool isMemory)
         {
             using (var writer = File.CreateText(name))
             {
                 foreach (var result in results)
-                    writer.WriteLine(result.Item1 + "," + result.Item2);
+                {
+                    if (isMemory)
+                        writer.WriteLine(result.Item1 + "," + result.Item2 / 1048576d);
+                    else
+                        writer.WriteLine(result.Item1 + "," + result.Item2);
+                }
             }
         }
     }

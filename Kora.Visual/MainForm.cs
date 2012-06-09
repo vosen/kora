@@ -32,8 +32,7 @@ namespace Kora.Visual
         private void ForwardClicked(object sender, EventArgs e)
         {
             BenchmarkType currentType  = GetBenchmarkType();
-            var results = GenerateBenchmarks(currentType, MarkedTypes(), Start, Count, Step, Control);
-            ChartForm chart = new ChartForm(currentType, results);
+            ChartForm chart = new ChartForm(currentType, MarkedTypes(), Start, Count, Step, Control);
             chart.ShowDialog();
         }
 
@@ -49,24 +48,6 @@ namespace Kora.Visual
             return marked;
         }
 
-        private MeasureResults GenerateBenchmarks(BenchmarkType type, StructureType types, int start, int count, int step, int control)
-        {
-            switch(type)
-            {
-                default:
-                case BenchmarkType.Add:
-                    return Benchmarking.MeasureSeriesAdd(types, start, count, step);
-                case BenchmarkType.Delete:
-                    return Benchmarking.MeasureSeriesDelete(types, start, count, step);
-                case BenchmarkType.Search:
-                    return Benchmarking.MeasureSeriesSearch(types, start, count, step, control);
-                case BenchmarkType.Successor:
-                    return Benchmarking.MeasureSeriesSuccessor(types, start, count, step, control);
-                case BenchmarkType.Memory:
-                    return Benchmarking.MeasureSeriesMemory(types, start, count, step);
-            }
-        }
-
         private BenchmarkType GetBenchmarkType()
         {
             if (AddCheckButton.Checked)
@@ -80,10 +61,6 @@ namespace Kora.Visual
             if (MemoryCheckButton.Checked)
                 return BenchmarkType.Memory;
             return BenchmarkType.Unknown;
-        }
-
-        private void HideControlCount()
-        {
         }
 
         private void RadioButtonCheckedChanged(object sender, EventArgs e)
