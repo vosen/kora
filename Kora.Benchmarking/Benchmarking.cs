@@ -36,7 +36,7 @@ namespace UAM.Kora
             Tuple<long, long>[] yfastStandardResults = new Tuple<long, long>[count];
 
             // calc the ranges
-            int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
+            int maxval = 2 * Math.Max((int)BitHacks.RoundToPower((uint)(start + (count - 1) * step)), control);
             int width = BitHacks.Power2MSB((uint)maxval);
             int positive = (int)(0.9 * control);
             int negative = control - positive;
@@ -45,19 +45,21 @@ namespace UAM.Kora
             int i = 0;
             foreach (var size in Enumerable.Range(0, count).Select(x => start + (x * step)))
             {
+                uint[] searchSet = new uint[control];
                 HashSet<uint> itemSet = GenerateRandomSet(size, maxval);
-                uint[] itemCopy = itemSet.ToArray();
-                Shuffle(itemCopy);
-                var posSet = itemCopy.Take(positive);
-                HashSet<uint> negSet = new HashSet<uint>();
-                while (negSet.Count < negative)
-                {
-                    uint rand = (uint)random.Next(maxval);
-                    if (!itemSet.Contains(rand))
-                        negSet.Add(rand);
-                }
-                uint[] searchSet = posSet.Concat(negSet).ToArray();
                 uint[] itemArray = itemSet.ToArray();
+                int j = 0;
+                for (; j < positive; j++)
+                    searchSet[j] = itemArray[random.Next(itemArray.Length)];
+                while(j < searchSet.Length)
+                {
+                    uint next = (uint)random.Next(maxval);
+                    if(!itemSet.Contains(next))
+                    {
+                        searchSet[j] = next;
+                        j++;
+                    }
+                }
 
                 if (types.HasFlag(StructureType.RBTree))
                 {
@@ -133,26 +135,13 @@ namespace UAM.Kora
             // calc the ranges
             int maxval = 2 * (int)BitHacks.RoundToPower((uint)(start + (count - 1) * step));
             int width = BitHacks.Power2MSB((uint)maxval);
-            int positive = (int)(0.9 * control);
-            int negative = control - positive;
 
             // run benchmarks
             int i = 0;
             foreach (var size in Enumerable.Range(0, count).Select(x => start + (x * step)))
             {
-                HashSet<uint> itemSet = GenerateRandomSet(size, maxval);
-                uint[] itemCopy = itemSet.ToArray();
-                Shuffle(itemCopy);
-                var posSet = itemCopy.Take(positive);
-                HashSet<uint> negSet = new HashSet<uint>();
-                while (negSet.Count < negative)
-                {
-                    uint rand = (uint)random.Next(maxval);
-                    if (!itemSet.Contains(rand))
-                        negSet.Add(rand);
-                }
-                uint[] searchSet = posSet.Concat(negSet).ToArray();
-                uint[] itemArray = itemSet.ToArray();
+                uint[] itemArray = GenerateRandomSet(size, maxval).ToArray();
+                uint[] searchSet = GenerateRandomSet(control, maxval).ToArray();
 
                 if (types.HasFlag(StructureType.RBTree))
                 {
