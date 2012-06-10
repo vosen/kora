@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.SortedDictionary", "Mo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Forms", "Kora.Benchmarking.Forms\Kora.Benchmarking.Forms.csproj", "{C1D38F37-245D-41D3-BFCC-8EB5E1BA74B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Console", "Kora.Benchmarking.CLI\Kora.Benchmarking.Console.csproj", "{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kora.Benchmarking.Console", "Kora.Benchmarking.Console\Kora.Benchmarking.Console.csproj", "{D4F2FBFE-9472-49DD-ACA6-43C32A074DD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
