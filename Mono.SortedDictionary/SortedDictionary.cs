@@ -814,7 +814,10 @@ namespace Mono.Collections.Generic
             {
                 return ((Node)current.right.FirstNode()).AsKV();
             }
-            return ((Node)highParent).AsKV();
+            if (highParent == null)
+                return null;
+            else
+                return ((Node)highParent).AsKV();
         }
 
     }
