@@ -800,7 +800,7 @@ namespace Mono.Collections.Generic
                     highParent = current;
                     current = current.left;
                 }
-                else if (cmp == 0)
+                else if (cmp > 0)
                 {
                     current = current.right;
                 }
