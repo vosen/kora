@@ -76,10 +76,10 @@
             this.AddCheckButton.Checked = true;
             this.AddCheckButton.Location = new System.Drawing.Point(3, 3);
             this.AddCheckButton.Name = "AddCheckButton";
-            this.AddCheckButton.Size = new System.Drawing.Size(79, 17);
+            this.AddCheckButton.Size = new System.Drawing.Size(63, 17);
             this.AddCheckButton.TabIndex = 0;
             this.AddCheckButton.TabStop = true;
-            this.AddCheckButton.Text = "Dodawanie";
+            this.AddCheckButton.Text = "Addition";
             this.AddCheckButton.UseVisualStyleBackColor = true;
             this.AddCheckButton.CheckedChanged += new System.EventHandler(this.RadioButtonCheckedChanged);
             // 
@@ -92,10 +92,10 @@
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(105, 134);
+            this.groupBox1.Size = new System.Drawing.Size(106, 134);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Metoda";
+            this.groupBox1.Text = "Method to test";
             // 
             // flowLayoutPanel2
             // 
@@ -111,7 +111,7 @@
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 16);
             this.flowLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(99, 115);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(100, 115);
             this.flowLayoutPanel2.TabIndex = 5;
             // 
             // DeleteCheckButton
@@ -119,10 +119,10 @@
             this.DeleteCheckButton.AutoSize = true;
             this.DeleteCheckButton.Location = new System.Drawing.Point(3, 26);
             this.DeleteCheckButton.Name = "DeleteCheckButton";
-            this.DeleteCheckButton.Size = new System.Drawing.Size(72, 17);
+            this.DeleteCheckButton.Size = new System.Drawing.Size(64, 17);
             this.DeleteCheckButton.TabIndex = 1;
             this.DeleteCheckButton.TabStop = true;
-            this.DeleteCheckButton.Text = "Usuwanie";
+            this.DeleteCheckButton.Text = "Deletion";
             this.DeleteCheckButton.UseVisualStyleBackColor = true;
             this.DeleteCheckButton.CheckedChanged += new System.EventHandler(this.RadioButtonCheckedChanged);
             // 
@@ -131,10 +131,10 @@
             this.SearchCheckButton.AutoSize = true;
             this.SearchCheckButton.Location = new System.Drawing.Point(3, 49);
             this.SearchCheckButton.Name = "SearchCheckButton";
-            this.SearchCheckButton.Size = new System.Drawing.Size(93, 17);
+            this.SearchCheckButton.Size = new System.Drawing.Size(59, 17);
             this.SearchCheckButton.TabIndex = 2;
             this.SearchCheckButton.TabStop = true;
-            this.SearchCheckButton.Text = "Wyszukiwanie";
+            this.SearchCheckButton.Text = "Search";
             this.SearchCheckButton.UseVisualStyleBackColor = true;
             this.SearchCheckButton.CheckedChanged += new System.EventHandler(this.RadioButtonCheckedChanged);
             // 
@@ -143,10 +143,10 @@
             this.SuccessorCheckButton.AutoSize = true;
             this.SuccessorCheckButton.Location = new System.Drawing.Point(3, 72);
             this.SuccessorCheckButton.Name = "SuccessorCheckButton";
-            this.SuccessorCheckButton.Size = new System.Drawing.Size(73, 17);
+            this.SuccessorCheckButton.Size = new System.Drawing.Size(75, 17);
             this.SuccessorCheckButton.TabIndex = 3;
             this.SuccessorCheckButton.TabStop = true;
-            this.SuccessorCheckButton.Text = "Następnik";
+            this.SuccessorCheckButton.Text = "Successor";
             this.SuccessorCheckButton.UseVisualStyleBackColor = true;
             this.SuccessorCheckButton.CheckedChanged += new System.EventHandler(this.RadioButtonCheckedChanged);
             // 
@@ -155,10 +155,10 @@
             this.MemoryCheckButton.AutoSize = true;
             this.MemoryCheckButton.Location = new System.Drawing.Point(3, 95);
             this.MemoryCheckButton.Name = "MemoryCheckButton";
-            this.MemoryCheckButton.Size = new System.Drawing.Size(60, 17);
+            this.MemoryCheckButton.Size = new System.Drawing.Size(94, 17);
             this.MemoryCheckButton.TabIndex = 4;
             this.MemoryCheckButton.TabStop = true;
-            this.MemoryCheckButton.Text = "Pamięć";
+            this.MemoryCheckButton.Text = "Memory usage";
             this.MemoryCheckButton.UseVisualStyleBackColor = true;
             this.MemoryCheckButton.CheckedChanged += new System.EventHandler(this.RadioButtonCheckedChanged);
             // 
@@ -168,12 +168,12 @@
             this.groupBox2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox2.Controls.Add(this.tableLayoutPanel1);
             this.flowLayoutPanel4.SetFlowBreak(this.groupBox2, true);
-            this.groupBox2.Location = new System.Drawing.Point(172, 3);
+            this.groupBox2.Location = new System.Drawing.Point(173, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(290, 123);
+            this.groupBox2.Size = new System.Drawing.Size(225, 123);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Parametry";
+            this.groupBox2.Text = "Parameters";
             // 
             // tableLayoutPanel1
             // 
@@ -198,7 +198,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(284, 104);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(219, 104);
             this.tableLayoutPanel1.TabIndex = 3;
             // 
             // ControlCountLabel
@@ -207,15 +207,15 @@
             this.ControlCountLabel.AutoSize = true;
             this.ControlCountLabel.Location = new System.Drawing.Point(3, 84);
             this.ControlCountLabel.Name = "ControlCountLabel";
-            this.ControlCountLabel.Size = new System.Drawing.Size(149, 13);
+            this.ControlCountLabel.Size = new System.Drawing.Size(81, 13);
             this.ControlCountLabel.TabIndex = 7;
-            this.ControlCountLabel.Text = "Rozmiar zestawu kontrolnego:";
+            this.ControlCountLabel.Text = "Control set size:";
             this.ControlCountLabel.Visible = false;
             // 
             // ControlCountControl
             // 
             this.ControlCountControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.ControlCountControl.Location = new System.Drawing.Point(161, 81);
+            this.ControlCountControl.Location = new System.Drawing.Point(96, 81);
             this.ControlCountControl.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -235,7 +235,7 @@
             // CountControl
             // 
             this.CountControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.CountControl.Location = new System.Drawing.Point(161, 55);
+            this.CountControl.Location = new System.Drawing.Point(96, 55);
             this.CountControl.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -258,7 +258,7 @@
             // StartControl
             // 
             this.StartControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.StartControl.Location = new System.Drawing.Point(161, 3);
+            this.StartControl.Location = new System.Drawing.Point(96, 3);
             this.StartControl.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -279,9 +279,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 6);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(152, 13);
+            this.label1.Size = new System.Drawing.Size(84, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Rozmiar zbioru początkowego:";
+            this.label1.Text = "Starting set size:";
             // 
             // label3
             // 
@@ -289,9 +289,9 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(3, 58);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 13);
+            this.label3.Size = new System.Drawing.Size(87, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Ilość kroków:";
+            this.label3.Text = "Number of steps:";
             // 
             // label2
             // 
@@ -299,14 +299,14 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(3, 32);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 13);
+            this.label2.Size = new System.Drawing.Size(74, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Rozmiar kroku:";
+            this.label2.Text = "Size of a step:";
             // 
             // StepControl
             // 
             this.StepControl.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.StepControl.Location = new System.Drawing.Point(161, 29);
+            this.StepControl.Location = new System.Drawing.Point(96, 29);
             this.StepControl.Maximum = new decimal(new int[] {
             1000000000,
             0,
@@ -326,13 +326,13 @@
             this.groupBox3.AutoSize = true;
             this.groupBox3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.groupBox3.Controls.Add(this.flowLayoutPanel3);
-            this.groupBox3.Location = new System.Drawing.Point(108, 3);
+            this.groupBox3.Location = new System.Drawing.Point(109, 3);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(0, 3, 3, 0);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(52, 157);
             this.groupBox3.TabIndex = 3;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Struktury danych";
+            this.groupBox3.Text = "Data structures";
             // 
             // flowLayoutPanel3
             // 
@@ -429,7 +429,7 @@
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(163, 160);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(164, 160);
             this.flowLayoutPanel1.TabIndex = 5;
             // 
             // flowLayoutPanel4
@@ -454,7 +454,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(655, 23);
             this.button1.TabIndex = 6;
-            this.button1.Text = "Uruchom";
+            this.button1.Text = "Run";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.ForwardClicked);
             // 
@@ -468,7 +468,7 @@
             this.Controls.Add(this.flowLayoutPanel4);
             this.Controls.Add(this.button1);
             this.Name = "MainForm";
-            this.Text = "Ustawienia";
+            this.Text = "Settings";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.flowLayoutPanel2.ResumeLayout(false);

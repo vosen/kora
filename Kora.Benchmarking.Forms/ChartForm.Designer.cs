@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.Chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label1 = new System.Windows.Forms.Label();
@@ -40,13 +40,13 @@
             // 
             // Chart
             // 
-            chartArea2.AxisX.Title = "Ilość elementów";
-            chartArea2.AxisY.Title = "Czas (ms)";
-            chartArea2.Name = "Default";
-            this.Chart.ChartAreas.Add(chartArea2);
+            chartArea1.AxisX.Title = "Number of elements";
+            chartArea1.AxisY.Title = "Time (ms)";
+            chartArea1.Name = "Default";
+            this.Chart.ChartAreas.Add(chartArea1);
             this.Chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend2.Name = "Legend1";
-            this.Chart.Legends.Add(legend2);
+            legend1.Name = "Legend1";
+            this.Chart.Legends.Add(legend1);
             this.Chart.Location = new System.Drawing.Point(0, 0);
             this.Chart.Name = "Chart";
             this.Chart.Size = new System.Drawing.Size(784, 562);
@@ -71,7 +71,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(500, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Przetwarzanie danych ...";
+            this.label1.Text = "Processing data ...";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // ProgressBarPanel
@@ -95,7 +95,7 @@
             this.Controls.Add(this.ProgressBarPanel);
             this.Controls.Add(this.Chart);
             this.Name = "ChartForm";
-            this.Text = "Wyniki";
+            this.Text = "Results";
             ((System.ComponentModel.ISupportInitialize)(this.Chart)).EndInit();
             this.ProgressBarPanel.ResumeLayout(false);
             this.ProgressBarPanel.PerformLayout();

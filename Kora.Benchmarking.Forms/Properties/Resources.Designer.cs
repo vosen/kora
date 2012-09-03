@@ -61,7 +61,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo czerwono-czarne.
+        ///   Looks up a localized string similar to red-black tree.
         /// </summary>
         internal static string RBTree {
             get {
@@ -70,7 +70,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo van Emde Boasa.
+        ///   Looks up a localized string similar to van Emde Boas tree.
         /// </summary>
         internal static string VEB {
             get {
@@ -79,7 +79,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo x-szybkie z haszowaniem perfekcyjnym.
+        ///   Looks up a localized string similar to x-fast trie with with dynamic perfect hashing.
         /// </summary>
         internal static string XTrieDPH {
             get {
@@ -88,7 +88,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo x-szybkie z zwyczajnym haszowaniem.
+        ///   Looks up a localized string similar to x-fast trie with with standard hashing.
         /// </summary>
         internal static string XTrieStandard {
             get {
@@ -97,7 +97,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo y-szybkie z haszowaniem perfekcyjnym.
+        ///   Looks up a localized string similar to y-fast trie with with dynamic perfect hashing.
         /// </summary>
         internal static string YTrieDPH {
             get {
@@ -106,7 +106,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Drzewo y-szybkie z zwyczajnym haszowaniem.
+        ///   Looks up a localized string similar to y-fast trie with with standard hashing.
         /// </summary>
         internal static string YTrieStandard {
             get {

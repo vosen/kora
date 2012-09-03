@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RBTree" xml:space="preserve">
-    <value>Drzewo czerwono-czarne</value>
+    <value>red-black tree</value>
   </data>
   <data name="VEB" xml:space="preserve">
-    <value>Drzewo van Emde Boasa</value>
+    <value>van Emde Boas tree</value>
   </data>
   <data name="XTrieDPH" xml:space="preserve">
-    <value>Drzewo x-szybkie z haszowaniem perfekcyjnym</value>
+    <value>x-fast trie with with dynamic perfect hashing</value>
   </data>
   <data name="XTrieStandard" xml:space="preserve">
-    <value>Drzewo x-szybkie z zwyczajnym haszowaniem</value>
+    <value>x-fast trie with with standard hashing</value>
   </data>
   <data name="YTrieDPH" xml:space="preserve">
-    <value>Drzewo y-szybkie z haszowaniem perfekcyjnym</value>
+    <value>y-fast trie with with dynamic perfect hashing</value>
   </data>
   <data name="YTrieStandard" xml:space="preserve">
-    <value>Drzewo y-szybkie z zwyczajnym haszowaniem</value>
+    <value>y-fast trie with with standard hashing</value>
   </data>
 </root>

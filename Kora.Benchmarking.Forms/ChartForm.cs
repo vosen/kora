@@ -25,7 +25,7 @@ namespace UAM.Kora.Forms
                 Chart.Visible = true;
                 ProgressBarPanel.Visible = false;
                 if ((type & BenchmarkType.Memory) > 0)
-                    Chart.ChartAreas[0].AxisY.Title = "Pamięć (MB)";
+                    Chart.ChartAreas[0].AxisY.Title = "Memory (MB)";
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
