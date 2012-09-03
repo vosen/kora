@@ -124,15 +124,15 @@
     <value>van Emde Boas tree</value>
   </data>
   <data name="XTrieDPH" xml:space="preserve">
-    <value>x-fast trie with with dynamic perfect hashing</value>
+    <value>x-fast trie with dynamic perfect hashing</value>
   </data>
   <data name="XTrieStandard" xml:space="preserve">
-    <value>x-fast trie with with standard hashing</value>
+    <value>x-fast trie with standard hashing</value>
   </data>
   <data name="YTrieDPH" xml:space="preserve">
-    <value>y-fast trie with with dynamic perfect hashing</value>
+    <value>y-fast trie with dynamic perfect hashing</value>
   </data>
   <data name="YTrieStandard" xml:space="preserve">
-    <value>y-fast trie with with standard hashing</value>
+    <value>y-fast trie with standard hashing</value>
   </data>
 </root>

@@ -79,7 +79,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to x-fast trie with with dynamic perfect hashing.
+        ///   Looks up a localized string similar to x-fast trie with dynamic perfect hashing.
         /// </summary>
         internal static string XTrieDPH {
             get {
@@ -88,7 +88,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to x-fast trie with with standard hashing.
+        ///   Looks up a localized string similar to x-fast trie with standard hashing.
         /// </summary>
         internal static string XTrieStandard {
             get {
@@ -97,7 +97,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to y-fast trie with with dynamic perfect hashing.
+        ///   Looks up a localized string similar to y-fast trie with dynamic perfect hashing.
         /// </summary>
         internal static string YTrieDPH {
             get {
@@ -106,7 +106,7 @@ namespace UAM.Kora.Forms.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to y-fast trie with with standard hashing.
+        ///   Looks up a localized string similar to y-fast trie with standard hashing.
         /// </summary>
         internal static string YTrieStandard {
             get {
